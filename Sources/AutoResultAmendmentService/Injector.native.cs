@@ -16,6 +16,8 @@ public static class Injector
         services.AddSingleton<IDynamicRepository, DynamicRepository>();
 
         services.AddSingleton<SettlementResultHistoryService, SettlementResultHistoryServiceImp>();
+        services.AddSingleton<PoolService, PoolServiceImp>();
+
         services.AddSingleton<SettlementResultHistoryRepository, SettlementResultHistoryRepositoryImp>();
         services.AddTransient<IMaintenanceService, MaintenanceServiceImp>();
 

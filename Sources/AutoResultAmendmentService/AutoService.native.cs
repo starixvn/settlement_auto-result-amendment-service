@@ -13,7 +13,7 @@ namespace AutoResultAmendmentService;
 public class AutoService : IHostedService
 {
     private readonly IMaintenanceService maintenanceService;
-
+    private readonly SettlementResultHistoryService settlementResultHistoryService;
     private readonly IConfiguration configuration;
 
     private bool running;
@@ -22,10 +22,12 @@ public class AutoService : IHostedService
 
     public AutoService(
         IConfiguration configuration,
-        IMaintenanceService maintenanceService)
+        IMaintenanceService maintenanceService,
+        SettlementResultHistoryService settlementResultHistoryService)
     {
         this.configuration = configuration;
         this.maintenanceService = maintenanceService;
+        this.settlementResultHistoryService = settlementResultHistoryService;
         InitializeExtraComponent();
         InitializeSetting();
     }
@@ -54,9 +56,9 @@ public class AutoService : IHostedService
     public Task StartAsync(CancellationToken cancellationToken)
     {
         running = true;
-        var autoRefundThread = new Thread(ThreadProcess);
+        var autoThread = new Thread(ThreadProcess);
         Console.WriteLine($"AutoResultAmendmentService Starting at {DateTime.Now}");
-        autoRefundThread.Start();
+        autoThread.Start();
         return Task.CompletedTask;
     }
 
@@ -69,25 +71,26 @@ public class AutoService : IHostedService
 
     private void ThreadProcess()
     {
-        //while (running)
-        //{
-        if (!maintenanceService.IsMaintenance)
+        while (running)
         {
-            MainProcess();
-            //var value = configuration.GetSection("ServiceInterval").Value;
-            //if (value != null)
-            //{
-            //    Thread.Sleep(int.Parse(value));
-            //}
+            if (!maintenanceService.IsMaintenance)
+            {
+                Console.WriteLine($"AutoResultAmendmentService Start interval at {DateTime.Now}");
+                MainProcess();
+                var value = configuration.GetValue("ServiceInterval", "3000");
+                if (value != null)
+                {
+                    Thread.Sleep(int.Parse(value));
+                }
+            }
         }
-        //}
     }
 
     private void MainProcess()
     {
         try
         {
-            //autoPayoutController.ProcessAsync();
+            settlementResultHistoryService.Handle();
             HandleGarbageCollector();
         }
         catch (Exception exception)

@@ -9,15 +9,15 @@ using Microsoft.Extensions.Options;
 
 public interface SettlementResultHistoryRepository
 {
-    Task<List<FailureResultHistory>> CheckResultHistoryError(ResultHistoryErrorCheckCriteria criteria);
+    Task<List<FailureResultHistory>> CheckResultHistoryError(ResultHistorySettled item);
 
     Task<List<ResultHistorySettled>> GetResultHistoryByEnv();
 
-    Task InsResultHistoryTicketDetails(ResultHistoryTicketDetailInsCriteria criteria);
+    Task InsResultHistoryTicketDetails(ResultHistorySettled item, string errorSessionIds = "");
 
-    Task UpdateResultHistory(ResultHistoryUpdateCriteria criteria);
+    Task UpdateResultHistory(ResultHistorySettled item, short StatusId);
 
-    void InsLetsTalkMessage(ResultHistorySettled item, string dbServer);
+    void InsLetsTalkMessage(ResultHistorySettled item);
 }
 
 public class SettlementResultHistoryRepositoryImp : SettlementResultHistoryRepository
@@ -52,21 +52,36 @@ public class SettlementResultHistoryRepositoryImp : SettlementResultHistoryRepos
         };
     }
 
-    public async Task UpdateResultHistory(ResultHistoryUpdateCriteria criteria)
+    public async Task UpdateResultHistory(ResultHistorySettled item, short statusId)
     {
+        var criteria = new ResultHistoryUpdateCriteria
+        {
+            SessionIds = item.SessionId,
+            StatusId = statusId,
+            MatchId = item.MatchId,
+            DbServer = item.DbServer
+        };
         await dynamicRepository.ExecuteAsync(criteria);
     }
 
-    public async Task InsResultHistoryTicketDetails(ResultHistoryTicketDetailInsCriteria criteria)
+    public async Task InsResultHistoryTicketDetails(ResultHistorySettled item, string errorSessionIds = "")
     {
+        var criteria = new ResultHistoryTicketDetailInsCriteria
+        {
+            MatchId = item.MatchId,
+            SessionId = item.SessionId,
+            ErrorSessionIds = errorSessionIds,
+            SportType = item.SportType,
+            DbServer = item.DbServer
+        };
         await dynamicRepository.ExecuteAsync(criteria);
     }
 
-    public void InsLetsTalkMessage(ResultHistorySettled item, string dbServer)
+    public void InsLetsTalkMessage(ResultHistorySettled item)
     {
         if (appSettings.EnvironmentName != "PRO") { return; }
 
-        var message = $"<p>Hey guys, Result Amendment Notification at {dbServer} has not been completed" +
+        var message = $"<p>Hey guys, Result Amendment Notification at {item.DbServer} has not been completed" +
             "</br>Please check data at <b>bodb02.dbo.SettlementResultHistory</b>" +
             $"</br><b>-Match ID:</b> {item.MatchId}" +
             $"</br><b>-Session:</b> {item.SessionId}</p>";
@@ -79,8 +94,17 @@ public class SettlementResultHistoryRepositoryImp : SettlementResultHistoryRepos
         dynamicRepository.Execute(criteria);
     }
 
-    public async Task<List<FailureResultHistory>> CheckResultHistoryError(ResultHistoryErrorCheckCriteria criteria)
+    public async Task<List<FailureResultHistory>> CheckResultHistoryError(ResultHistorySettled item)
     {
+        var criteria = new ResultHistoryErrorCheckCriteria
+        {
+            SessionId = item.SessionId,
+            CreatedDate = item.CreatedDate,
+            ActualResult = item.ActualResult,
+            MatchId = item.MatchId,
+            DbServer = item.DbServer,
+        };
+
         var result = await dynamicRepository.FetchAsync<FailureResultHistory>(criteria);
 
         return result.ToList();

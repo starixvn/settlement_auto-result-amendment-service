@@ -11,7 +11,7 @@ namespace AutoResultAmendment.Criteria;
 public class ResultHistoryUpdateCriteria : NonQueryCommand
 {
     public int MatchId { get; set; }
-    public short? StatusId { get; set; }
+    public short StatusId { get; set; }
     public string SessionIds { get; set; }
 
     [SpParam(Ignored = true)]
