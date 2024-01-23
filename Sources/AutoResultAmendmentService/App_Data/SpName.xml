@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Functions>
+
+	<Function Name="NAP_SettlementResultHistory_Schedule">
+		<Setting Key="NAP_SettlementResultHistory_Schedule_DBSID01" SpName="NAP_SettlementResultHistory_Schedule_UAT4" DbName="DBSID01.bodb02.bodbAdminNet" />
+		<Setting Key="NAP_SettlementResultHistory_Schedule_DBSID02" SpName="NAP_SettlementResultHistory_Schedule_UAT4" DbName="DBSID02.bodb02.bodbAdminNet" />
+		<Setting Key="NAP_SettlementResultHistory_Schedule_DBSID03" SpName="NAP_SettlementResultHistory_Schedule_UAT4" DbName="DBSID03.bodb02.bodbAdminNet" />
+	</Function>
+
+	<Function Name="NAP_SettlementResultHistory_TicketDetails_Ins">
+		<Setting Key="NAP_SettlementResultHistory_TicketDetails_Ins_DBSID01" SpName="NAP_SettlementResultHistory_TicketDetails_Ins_UAT4" DbName="DBSID01.bodb02.bodbAdminNet" />
+		<Setting Key="NAP_SettlementResultHistory_TicketDetails_Ins_DBSID02" SpName="NAP_SettlementResultHistory_TicketDetails_Ins_UAT4" DbName="DBSID02.bodb02.bodbAdminNet" />
+		<Setting Key="NAP_SettlementResultHistory_TicketDetails_Ins_DBSID03" SpName="NAP_SettlementResultHistory_TicketDetails_Ins_UAT4" DbName="DBSID03.bodb02.bodbAdminNet" />
+	</Function>
+
+	<Function Name="NAP_SettlementResultHistory_CheckErrorStatus">
+		<Setting Key="NAP_SettlementResultHistory_CheckErrorStatus_DBSID01" SpName="NAP_SettlementResultHistory_CheckErrorStatus_UAT4" DbName="DBSID01.bodb02.bodbAdminNet" />
+		<Setting Key="NAP_SettlementResultHistory_CheckErrorStatus_DBSID02" SpName="NAP_SettlementResultHistory_CheckErrorStatus_UAT4" DbName="DBSID02.bodb02.bodbAdminNet" />
+		<Setting Key="NAP_SettlementResultHistory_CheckErrorStatus_DBSID03" SpName="NAP_SettlementResultHistory_CheckErrorStatus_UAT4" DbName="DBSID03.bodb02.bodbAdminNet" />
+	</Function>
+
+	<Function Name="NAP_SettlementResultHistory_Update">
+		<Setting Key="NAP_SettlementResultHistory_Update_DBSID01" SpName="NAP_SettlementResultHistory_Update_UAT4" DbName="DBSID01.bodb02.bodbAdminNet" />
+		<Setting Key="NAP_SettlementResultHistory_Update_DBSID02" SpName="NAP_SettlementResultHistory_Update_UAT4" DbName="DBSID02.bodb02.bodbAdminNet" />
+		<Setting Key="NAP_SettlementResultHistory_Update_DBSID03" SpName="NAP_SettlementResultHistory_Update_UAT4" DbName="DBSID03.bodb02.bodbAdminNet" />
+	</Function>
+
+	<Function Name="DBA_Send_Letstalk">
+		<Setting Key="DBA_Send_Letstalk" SpName="DBA_Send_Letstalk_UAT4" DbName="DBTXN.bodb02.bodbAdminNet" />
+	</Function>
+</Functions>
