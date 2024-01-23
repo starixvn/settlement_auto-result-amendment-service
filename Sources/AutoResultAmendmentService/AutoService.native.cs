@@ -8,6 +8,8 @@ using ONEbook.UM.Configurations;
 using ONEbook.UM.Transport;
 using SharpRaven;
 
+using MailAppSettings = Fanex.MailDeliver.MailClient.AppSettings;
+
 namespace AutoResultAmendmentService;
 
 public class AutoService : IHostedService
@@ -137,5 +139,8 @@ public class AutoService : IHostedService
         logEngine.Add(new SentryLogging(sentryEngineOptions));
 
         LogManager.SetDefaultLogCategory(configuration.GetSection("SiteCategory").Value).Use(logEngine);
+
+        MailAppSettings.AppMailId = configuration.GetSection("MailServer:Id").Value;
+        MailAppSettings.AppMailAddress = configuration.GetSection("MailServer:Address").Value;
     }
 }
