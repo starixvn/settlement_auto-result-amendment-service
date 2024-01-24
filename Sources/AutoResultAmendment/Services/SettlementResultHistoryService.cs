@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoResultAmendment.Constants;
 using AutoResultAmendment.Criteria;
 using AutoResultAmendment.Models;
 using AutoResultAmendment.Services;
@@ -47,7 +48,7 @@ public class SettlementResultHistoryServiceImp : SettlementResultHistoryService
             if (item.HasError)
             {
                 await resultHistoryRepository.InsResultHistoryTicketDetails(item);
-                await resultHistoryRepository.UpdateResultHistory(item, 99);
+                await resultHistoryRepository.UpdateResultHistory(item, ResultHistoryStatus.Error);
                 return;
             }
 
@@ -59,7 +60,8 @@ public class SettlementResultHistoryServiceImp : SettlementResultHistoryService
 
             if (!item.HasError && (!item.IsCalculated || !item.IsDoneBalNeg)) // fail settle
             {
-                await resultHistoryRepository.UpdateResultHistory(item, 3);
+                await resultHistoryRepository.InsResultHistoryTicketDetails(item);
+                await resultHistoryRepository.UpdateResultHistory(item, ResultHistoryStatus.Failure);
 
                 SendMail(item);
 
@@ -87,29 +89,37 @@ public class SettlementResultHistoryServiceImp : SettlementResultHistoryService
         await resultHistoryRepository.InsResultHistoryTicketDetails(item, errorSessionIdsStr);
 
         // Update 2
-        await resultHistoryRepository.UpdateResultHistory(item, 2);
+        await resultHistoryRepository.UpdateResultHistory(item, ResultHistoryStatus.Success);
 
         // Update 4
         if (errorResult.Count > 0)
         {
             item.SessionId = errorSessionIdsStr;
-            await resultHistoryRepository.UpdateResultHistory(item, 4);
+            await resultHistoryRepository.UpdateResultHistory(item, ResultHistoryStatus.ErrorHandled);
         }
     }
 
     private void SendMail(ResultHistorySettled item)
     {
-        var mailRecord = new MailRecord
+        try
         {
-            Title = "NAP - Settlement System",
-            Subject = "Result Amendment Issue - Process time out",
-            MailTo = string.Join(",", appSettings.EmailAddress),
-            Body = MailBody(item)
-        };
+            var mailRecord = new MailRecord
+            {
+                Title = "NAP - Settlement System",
+                Subject = "Result Amendment Issue - Process time out",
+                MailTo = string.Join(",", appSettings.EmailAddress),
+                Body = MailBody(item)
+            };
 
-        using var mailClient = new Fanex.MailDeliver.MailClient.API.MailDeliver();
+            using var mailClient = new Fanex.MailDeliver.MailClient.API.MailDeliver();
 
-        mailClient.SendMail(mailRecord);
+            mailClient.SendMail(mailRecord);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw;
+        }
     }
 
     private static string MailBody(ResultHistorySettled item)
@@ -123,7 +133,7 @@ public class SettlementResultHistoryServiceImp : SettlementResultHistoryService
                 <p>+ Action: {item.ActionType}</p>
                 <p>+ Created Time: {item.CreatedDate}</p>
                 <p>+ Current Status: {item.StatusId}</p>
-                <p>+ Issue: the command has not been completed (success/failed) for more than 5 minutes.</p>
+                <p>+ Issue: Process time out. The command has not been completed (success/failed) for more than 5 minutes.</p>
             """;
     }
 }
