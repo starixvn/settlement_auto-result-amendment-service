@@ -119,7 +119,7 @@ public class SettlementResultHistoryRepositoryImp : SettlementResultHistoryRepos
         {
             criteria.DbServer = server;
 
-            var result = await dynamicRepository.FetchAsync<ResultHistorySettled>(criteria);
+            var result = (await dynamicRepository.FetchAsync<ResultHistorySettled>(criteria)) ?? new List<ResultHistorySettled>();
 
             result.ToList().ForEach(x => x.DbServer = server);
 
