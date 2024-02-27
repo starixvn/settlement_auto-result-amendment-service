@@ -33,10 +33,10 @@ public class SettlementResultHistoryServiceImp : SettlementResultHistoryService
 
     public async Task Handle()
     {
-        var result = await poolService.PeekResultHistory();
-
+        var result = await resultHistoryRepository.GetResultHistoryByEnv();
         foreach (var item in result)
         {
+            Console.WriteLine($"Start Process: {item.SessionId} server: {item.DbServer}");
             await Process(item);
         }
     }
@@ -76,7 +76,8 @@ public class SettlementResultHistoryServiceImp : SettlementResultHistoryService
         }
         finally
         {
-            poolService.Remove(item);
+            Console.WriteLine($"Done: {item.SessionId} server: {item.DbServer}");
+            //poolService.Remove(item);
         }
     }
 

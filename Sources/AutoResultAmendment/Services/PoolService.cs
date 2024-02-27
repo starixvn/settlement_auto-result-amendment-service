@@ -39,9 +39,10 @@ public class PoolServiceImp : PoolService
         {
             var newResult = result.Except(poolOfResultHistory).ToList();
             poolOfResultHistory.AddRange(newResult);
-
             return newResult;
         }
+
+        return result;
     }
 
     public void Remove(ResultHistorySettled item)

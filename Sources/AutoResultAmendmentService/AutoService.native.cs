@@ -80,10 +80,7 @@ public class AutoService : IHostedService
                 Console.WriteLine($"AutoResultAmendmentService Start interval at {DateTime.Now}");
                 MainProcess();
                 var value = configuration.GetValue("ServiceInterval", "3000");
-                if (value != null)
-                {
-                    Thread.Sleep(int.Parse(value));
-                }
+                Thread.Sleep(int.Parse(value));
             }
         }
     }
