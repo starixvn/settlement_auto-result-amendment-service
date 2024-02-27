@@ -71,25 +71,25 @@ public class AutoService : IHostedService
         return Task.CompletedTask;
     }
 
-    private void ThreadProcess()
+    private async void ThreadProcess()
     {
         while (running)
         {
             if (!maintenanceService.IsMaintenance)
             {
                 Console.WriteLine($"AutoResultAmendmentService Start interval at {DateTime.Now}");
-                MainProcess();
+                await MainProcess();
                 var value = configuration.GetValue("ServiceInterval", "3000");
                 Thread.Sleep(int.Parse(value));
             }
         }
     }
 
-    private void MainProcess()
+    private async Task MainProcess()
     {
         try
         {
-            settlementResultHistoryService.Handle();
+            await settlementResultHistoryService.Handle();
             HandleGarbageCollector();
         }
         catch (Exception exception)
