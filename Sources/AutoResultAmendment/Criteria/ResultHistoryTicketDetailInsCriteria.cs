@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fanex.Data;
-using Fanex.Data.Repository;
-
-namespace AutoResultAmendment.Criteria;
+﻿namespace AutoResultAmendment.Criteria;
 
 public class ResultHistoryTicketDetailInsCriteria : NonQueryCommand
 {
     public int MatchId { get; set; }
+
     public int SportType { get; set; }
+
     public string SessionId { get; set; }
+
     public string ErrorSessionIds { get; set; }
 
     [SpParam(Ignored = true)]

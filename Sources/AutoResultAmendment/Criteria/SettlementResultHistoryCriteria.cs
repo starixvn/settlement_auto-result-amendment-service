@@ -1,7 +1,4 @@
-﻿using Fanex.Data;
-using Fanex.Data.Repository;
-
-namespace AutoResultAmendment.Criteria;
+﻿namespace AutoResultAmendment.Criteria;
 
 public class SettlementResultHistoryCriteria : NonQueryCommand
 {

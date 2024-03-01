@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-namespace AutoResultAmendment.Models;
+﻿namespace AutoResultAmendment.Models;
 
 public class ResultHistorySettled
 {
@@ -23,7 +16,7 @@ public class ResultHistorySettled
     public bool HasError { get; set; }
     public string DbServer { get; set; } = string.Empty;
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj is ResultHistorySettled item
                && item.SessionId == SessionId

@@ -1,36 +1,21 @@
-﻿using System;
-using AutoResultAmendment.Constants;
-using AutoResultAmendment.Criteria;
-using AutoResultAmendment.Models;
-using AutoResultAmendment.Services;
-using Fanex.Caching;
-using Fanex.Data.Repository;
-using Fanex.Logging;
+﻿using Fanex.Logging;
 using Fanex.MailDeliver.MailClient.Model;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.Options;
+
+namespace AutoResultAmendment.Services;
+
+using Constants;
+using Models;
 
 public interface SettlementResultHistoryService
 {
     Task Handle();
 }
 
-public class SettlementResultHistoryServiceImp : SettlementResultHistoryService
+public class SettlementResultHistoryServiceImp(
+    SettlementResultHistoryRepository resultHistoryRepository,
+    IOptions<AppSettings> appSettings)
+    : SettlementResultHistoryService
 {
-    private readonly SettlementResultHistoryRepository resultHistoryRepository;
-    private readonly PoolService poolService;
-    private readonly AppSettings appSettings;
-
-    public SettlementResultHistoryServiceImp(
-        SettlementResultHistoryRepository resultHistoryRepository,
-        IOptions<AppSettings> appSettings,
-        PoolService poolService)
-    {
-        this.resultHistoryRepository = resultHistoryRepository;
-        this.appSettings = appSettings.Value;
-        this.poolService = poolService;
-    }
-
     public async Task Handle()
     {
         var result = await resultHistoryRepository.GetResultHistoryByEnv();
@@ -47,12 +32,12 @@ public class SettlementResultHistoryServiceImp : SettlementResultHistoryService
         {
             if (item.HasError)
             {
-                await resultHistoryRepository.InsResultHistoryTicketDetails(item);
+                await resultHistoryRepository.InsResultHistoryTicketDetails(item, string.Empty);
                 await resultHistoryRepository.UpdateResultHistory(item, ResultHistoryStatus.Error);
                 return;
             }
 
-            if (!item.HasError && item.IsCalculated && item.IsDoneBalNeg) // success
+            if (item is { HasError: false, IsCalculated: true, IsDoneBalNeg: true }) // success
             {
                 await HandleTicketSettleDone(item);
                 return;
@@ -60,24 +45,21 @@ public class SettlementResultHistoryServiceImp : SettlementResultHistoryService
 
             if (!item.HasError && (!item.IsCalculated || !item.IsDoneBalNeg)) // fail settle
             {
-                await resultHistoryRepository.InsResultHistoryTicketDetails(item);
+                await resultHistoryRepository.InsResultHistoryTicketDetails(item, string.Empty);
                 await resultHistoryRepository.UpdateResultHistory(item, ResultHistoryStatus.Failure);
 
                 SendMail(item);
 
                 resultHistoryRepository.InsLetsTalkMessage(item);
-
-                return;
             }
         }
         catch (Exception ex)
         {
-            LogService.Error("Fanex.AutoResultAmendmentService: ", ex);
+            await LogService.ErrorAsync("Fanex.AutoResultAmendmentService: ", ex);
         }
         finally
         {
             Console.WriteLine($"Done: {item.SessionId} server: {item.DbServer}");
-            //poolService.Remove(item);
         }
     }
 
@@ -108,7 +90,7 @@ public class SettlementResultHistoryServiceImp : SettlementResultHistoryService
             {
                 Title = "NAP - Settlement System",
                 Subject = "Result Amendment Issue - Process time out",
-                MailTo = string.Join(",", appSettings.EmailAddress),
+                MailTo = string.Join(",", appSettings.Value.EmailAddress),
                 Body = MailBody(item)
             };
 

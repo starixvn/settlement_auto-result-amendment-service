@@ -1,13 +1,13 @@
-﻿using Fanex.Data;
-using Fanex.Data.Repository;
-
-namespace AutoResultAmendment.Criteria;
+﻿namespace AutoResultAmendment.Criteria;
 
 public class ResultHistoryErrorCheckCriteria : CriteriaBase
 {
     public int MatchId { get; set; }
+
     public string SessionId { get; set; }
+
     public DateTime CreatedDate { get; set; }
+
     public string ActualResult { get; set; }
 
     [SpParam(Ignored = true)]

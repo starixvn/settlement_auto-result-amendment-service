@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using AutoResultAmendment.Models;
-using Microsoft.Extensions.FileSystemGlobbing;
+﻿using AutoResultAmendment.Models;
 
 namespace AutoResultAmendment.Services;
 
@@ -16,20 +9,12 @@ public interface PoolService
     void Remove(ResultHistorySettled item);
 }
 
-public class PoolServiceImp : PoolService
+public class PoolServiceImp(SettlementResultHistoryRepository resultHistoryRepository) : PoolService
 {
     private readonly List<ResultHistorySettled> poolOfResultHistory = new();
     public List<ResultHistorySettled> PoolOfResultHistory => poolOfResultHistory;
 
-    private readonly object lockObject;
-
-    private readonly SettlementResultHistoryRepository resultHistoryRepository;
-
-    public PoolServiceImp(SettlementResultHistoryRepository resultHistoryRepository)
-    {
-        this.resultHistoryRepository = resultHistoryRepository;
-        lockObject = new object();
-    }
+    private readonly object lockObject = new();
 
     public async Task<List<ResultHistorySettled>> PeekResultHistory()
     {

@@ -14,13 +14,9 @@ public static class Injector
     public static void InitializeServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IDynamicRepository, DynamicRepository>();
-
         services.AddSingleton<SettlementResultHistoryService, SettlementResultHistoryServiceImp>();
-        services.AddSingleton<PoolService, PoolServiceImp>();
-
         services.AddSingleton<SettlementResultHistoryRepository, SettlementResultHistoryRepositoryImp>();
         services.AddTransient<IMaintenanceService, MaintenanceServiceImp>();
-
         services.AddSingleton(new UMClientConfiguration().Initialize(configuration));
         services.AddSingleton<IUMCacheService, UMCacheService>();
         services.AddSingleton<IUMRestClient, UMRestClient>();

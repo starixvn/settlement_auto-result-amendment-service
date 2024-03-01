@@ -1,11 +1,10 @@
-﻿using System.Reflection.Emit;
-using AutoResultAmendment.Criteria;
-using AutoResultAmendment.Models;
-using Fanex.Caching;
-using Fanex.Data.Repository;
-using Fanex.Logging;
-using Fanex.MailDeliver.MailClient.Model;
-using Microsoft.Extensions.Options;
+﻿using Fanex.Caching;
+
+namespace AutoResultAmendment.Services;
+
+using Constants;
+using Criteria;
+using Models;
 
 public interface SettlementResultHistoryRepository
 {
@@ -13,38 +12,26 @@ public interface SettlementResultHistoryRepository
 
     Task<List<ResultHistorySettled>> GetResultHistoryByEnv();
 
-    Task InsResultHistoryTicketDetails(ResultHistorySettled item, string errorSessionIds = "");
+    Task InsResultHistoryTicketDetails(ResultHistorySettled item, string errorSessionIds);
 
-    Task UpdateResultHistory(ResultHistorySettled item, short StatusId);
+    Task UpdateResultHistory(ResultHistorySettled item, short statusId);
 
     void InsLetsTalkMessage(ResultHistorySettled item);
 }
 
-public class SettlementResultHistoryRepositoryImp : SettlementResultHistoryRepository
+public class SettlementResultHistoryRepositoryImp(
+    IOptions<AppSettings> appSettings,
+    IDynamicRepository dynamicRepository,
+    ICache cache)
+    : SettlementResultHistoryRepository
 {
-    private const string KeyLeagueId = "Settlement-AutoPayoutVirtualCricket-LeagueId";
-
-    private readonly AppSettings appSettings;
-    private readonly IDynamicRepository dynamicRepository;
-    private readonly ICache cache;
-
-    public SettlementResultHistoryRepositoryImp(
-        IOptions<AppSettings> appSettings,
-        IDynamicRepository dynamicRepository,
-        ICache cache)
-    {
-        this.appSettings = appSettings.Value;
-        this.dynamicRepository = dynamicRepository;
-        this.cache = cache;
-    }
-
     public async Task<List<ResultHistorySettled>> GetResultHistoryByEnv()
     {
-        var (_, leagueId) = await cache.TryGetAsync<int>(KeyLeagueId);
+        var (_, leagueId) = await cache.TryGetAsync<int>(CacheKeys.LeagueIdForTest);
         var result = await GetResultHistory();
         var orderedResult = result.OrderBy(x => x.CreatedDate).ToList();
 
-        return appSettings.EnvironmentName switch
+        return appSettings.Value.EnvironmentName switch
         {
             "PRO" => leagueId > 0 ? orderedResult.Where(x => x.LeagueId != leagueId).ToList() : orderedResult.ToList(),
             "UAT" => orderedResult.Where(x => x.LeagueId == leagueId).ToList(),
@@ -64,7 +51,7 @@ public class SettlementResultHistoryRepositoryImp : SettlementResultHistoryRepos
         await dynamicRepository.ExecuteAsync(criteria);
     }
 
-    public async Task InsResultHistoryTicketDetails(ResultHistorySettled item, string errorSessionIds = "")
+    public async Task InsResultHistoryTicketDetails(ResultHistorySettled item, string errorSessionIds)
     {
         var criteria = new ResultHistoryTicketDetailInsCriteria
         {
@@ -79,7 +66,7 @@ public class SettlementResultHistoryRepositoryImp : SettlementResultHistoryRepos
 
     public void InsLetsTalkMessage(ResultHistorySettled item)
     {
-        if (appSettings.EnvironmentName != "PRO") { return; }
+        if (appSettings.Value.EnvironmentName != "PRO") { return; }
 
         var message = $"<p>Hey guys, Result Amendment Notification at {item.DbServer} has not been completed" +
             "</br>Please check data at <b>bodb02.dbo.SettlementResultHistory</b>" +
@@ -115,13 +102,13 @@ public class SettlementResultHistoryRepositoryImp : SettlementResultHistoryRepos
         var criteria = new SettlementResultHistoryCriteria();
         var results = new List<ResultHistorySettled>();
 
-        foreach (var server in appSettings.SiteDbServer.Where(x => x != "DBTXN"))
+        foreach (var server in appSettings.Value.SiteDbServer.Where(x => !string.Equals(x, DataBaseName.Dbtxn)))
         {
             criteria.DbServer = server;
 
-            var result = (await dynamicRepository.FetchAsync<ResultHistorySettled>(criteria)) ?? new List<ResultHistorySettled>();
+            var result = (await dynamicRepository.FetchAsync<ResultHistorySettled>(criteria)).ToList();
 
-            result.ToList().ForEach(x => x.DbServer = server);
+            result.ForEach(x => x.DbServer = server);
 
             results.AddRange(result);
         }

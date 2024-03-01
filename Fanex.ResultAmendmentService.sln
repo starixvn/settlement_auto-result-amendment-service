@@ -7,9 +7,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{DCCE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{090D6107-AD84-4F3E-AB25-B0E496C0580E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoResultAmendmentService", "Sources\AutoResultAmendmentService\AutoResultAmendmentService.csproj", "{BD4BC52F-F0F6-4668-BCD5-C0035D8A1249}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoResultAmendmentService", "Sources\AutoResultAmendmentService\AutoResultAmendmentService.csproj", "{BD4BC52F-F0F6-4668-BCD5-C0035D8A1249}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoResultAmendment", "Sources\AutoResultAmendment\AutoResultAmendment.csproj", "{8E81F68A-3ADE-4AE7-8D79-9DC7B236E072}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoResultAmendment", "Sources\AutoResultAmendment\AutoResultAmendment.csproj", "{8E81F68A-3ADE-4AE7-8D79-9DC7B236E072}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{282B41F5-629B-4823-BA3B-F6F6B36A045B}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.gitlab-ci.yml = .gitlab-ci.yml
+		Dockerfile = Dockerfile
+		Fanex.ResultAmendmentService.sln.DotSettings.user = Fanex.ResultAmendmentService.sln.DotSettings.user
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

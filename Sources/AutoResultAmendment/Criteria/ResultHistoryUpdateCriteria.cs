@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fanex.Data;
-using Fanex.Data.Repository;
-
-namespace AutoResultAmendment.Criteria;
+﻿namespace AutoResultAmendment.Criteria;
 
 public class ResultHistoryUpdateCriteria : NonQueryCommand
 {
     public int MatchId { get; set; }
+
     public short StatusId { get; set; }
+
     public string SessionIds { get; set; }
 
     [SpParam(Ignored = true)]

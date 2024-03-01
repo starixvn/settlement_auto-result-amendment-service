@@ -94,7 +94,7 @@ public class AutoService : IHostedService
         }
         catch (Exception exception)
         {
-            LogService.Error("Fanex.AutoResultAmendmentService: ", exception);
+            await LogService.ErrorAsync("Fanex.AutoResultAmendmentService: ", exception);
         }
     }
 
