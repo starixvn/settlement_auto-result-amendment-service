@@ -27,16 +27,34 @@ public class SettlementResultHistoryRepositoryImp(
 {
     public async Task<List<ResultHistorySettled>> GetResultHistoryByEnv()
     {
-        var (_, leagueId) = await cache.TryGetAsync<int>(CacheKeys.LeagueIdForTest);
+        var leagueIds = await GetLeagueIdsTest();
         var result = await GetResultHistory();
         var orderedResult = result.OrderBy(x => x.CreatedDate).ToList();
 
         return appSettings.Value.EnvironmentName switch
         {
-            "PRO" => leagueId > 0 ? orderedResult.Where(x => x.LeagueId != leagueId).ToList() : orderedResult.ToList(),
-            "UAT" => orderedResult.Where(x => x.LeagueId == leagueId).ToList(),
+            "PRO" => leagueIds.Count > 0 ? orderedResult.Where(x => !leagueIds.Contains(x.LeagueId ?? 0)).ToList() : orderedResult.ToList(),
+            "UAT" => orderedResult.Where(x => leagueIds.Contains(x.LeagueId ?? 0)).ToList(),
             _ => orderedResult.ToList()
         };
+    }
+
+    private async Task<List<int>> GetLeagueIdsTest()
+    {
+        var result = new List<int>();
+        var (_, leagueId) = await cache.TryGetAsync<int>(CacheKeys.LeagueIdForTest);
+        var (_, leagueIdsStr) = await cache.TryGetAsync<string>(CacheKeys.KEY_LEAGUEIDS_TEST);
+
+        var item = leagueIdsStr.Split(',').Select(x =>
+        {
+            int value;
+            return int.TryParse(x, out value) ? value : 0;
+        }).ToList();
+
+        result.Add(leagueId);
+        result.AddRange(item);
+
+        return result;
     }
 
     public async Task UpdateResultHistory(ResultHistorySettled item, short statusId)
