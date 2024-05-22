@@ -4,8 +4,6 @@ using Fanex.Data.SqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddFanexSql(builder.Configuration);
 
 builder.Services.Configure<AppSettings>(builder.Configuration);

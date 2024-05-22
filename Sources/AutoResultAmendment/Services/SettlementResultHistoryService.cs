@@ -21,7 +21,6 @@ public class SettlementResultHistoryServiceImp(
         var result = await resultHistoryRepository.GetResultHistoryByEnv();
         foreach (var item in result)
         {
-            Console.WriteLine($"Start Process: {item.SessionId} server: {item.DbServer}");
             await Process(item);
         }
     }
@@ -37,13 +36,13 @@ public class SettlementResultHistoryServiceImp(
                 return;
             }
 
-            if (item is { HasError: false, IsCalculated: true, IsDoneBalNeg: true }) // success
+            if (item is { HasError: false, IsCalculated: true, IsDoneBalNeg: true })
             {
                 await HandleTicketSettleDone(item);
                 return;
             }
 
-            if (!item.HasError && (!item.IsCalculated || !item.IsDoneBalNeg)) // fail settle
+            if (!item.HasError && (!item.IsCalculated || !item.IsDoneBalNeg))
             {
                 await resultHistoryRepository.InsResultHistoryTicketDetails(item, string.Empty);
                 await resultHistoryRepository.UpdateResultHistory(item, ResultHistoryStatus.Failure);
@@ -57,10 +56,6 @@ public class SettlementResultHistoryServiceImp(
         {
             await LogService.ErrorAsync("Fanex.AutoResultAmendmentService: ", ex);
         }
-        finally
-        {
-            Console.WriteLine($"Done: {item.SessionId} server: {item.DbServer}");
-        }
     }
 
     private async Task HandleTicketSettleDone(ResultHistorySettled item)
@@ -71,10 +66,8 @@ public class SettlementResultHistoryServiceImp(
 
         await resultHistoryRepository.InsResultHistoryTicketDetails(item, errorSessionIdsStr);
 
-        // Update 2
         await resultHistoryRepository.UpdateResultHistory(item, ResultHistoryStatus.Success);
 
-        // Update 4
         if (errorResult.Count > 0)
         {
             item.SessionId = errorSessionIdsStr;
@@ -84,25 +77,17 @@ public class SettlementResultHistoryServiceImp(
 
     private void SendMail(ResultHistorySettled item)
     {
-        try
+        var mailRecord = new MailRecord
         {
-            var mailRecord = new MailRecord
-            {
-                Title = "NAP - Settlement System",
-                Subject = "Result Amendment Issue - Process time out",
-                MailTo = string.Join(",", appSettings.Value.EmailAddress),
-                Body = MailBody(item)
-            };
+            Title = "NAP - Settlement System",
+            Subject = "Result Amendment Issue - Process time out",
+            MailTo = string.Join(",", appSettings.Value.EmailAddress),
+            Body = MailBody(item)
+        };
 
-            using var mailClient = new Fanex.MailDeliver.MailClient.API.MailDeliver();
+        using var mailClient = new Fanex.MailDeliver.MailClient.API.MailDeliver();
 
-            mailClient.SendMail(mailRecord);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-            throw;
-        }
+        mailClient.SendMail(mailRecord);
     }
 
     private static string MailBody(ResultHistorySettled item)

@@ -3,7 +3,8 @@
 public static class CacheKeys
 {
     public const string LeagueIdForTest = "Settlement-AutoPayoutVirtualCricket-LeagueId";
-    public const string KEY_LEAGUEIDS_TEST = "Settlement-AutoSettle-LeagueIds";
+
+    public const string LeagueIdsTest = "Settlement-AutoSettle-LeagueIds";
 }
 
 public static class ResultHistoryStatus

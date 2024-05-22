@@ -43,7 +43,7 @@ public class SettlementResultHistoryRepositoryImp(
     {
         var result = new List<int>();
         var (_, leagueId) = await cache.TryGetAsync<int>(CacheKeys.LeagueIdForTest);
-        var (_, leagueIdsStr) = await cache.TryGetAsync<string>(CacheKeys.KEY_LEAGUEIDS_TEST);
+        var (_, leagueIdsStr) = await cache.TryGetAsync<string>(CacheKeys.LeagueIdsTest);
 
         var item = (leagueIdsStr ?? string.Empty).Split(',').Select(x =>
         {

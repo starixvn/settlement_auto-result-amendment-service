@@ -1,143 +1,57 @@
 ﻿using AutoResultAmendment.Services;
-using Fanex.Caching;
 using Fanex.Logging;
-using Fanex.Logging.Sentry.RavenClient;
-using ONEbook.UM;
-using ONEbook.UM.AspNetCore;
-using ONEbook.UM.Configurations;
-using ONEbook.UM.Transport;
-using SharpRaven;
-
-using MailAppSettings = Fanex.MailDeliver.MailClient.AppSettings;
+using Fanex.Logging.Extensions;
+using Fanex.Logging.Extensions.Database;
 
 namespace AutoResultAmendmentService;
 
-public class AutoService : IHostedService
+public class AutoService(
+    IConfiguration configuration,
+    IMaintenanceService maintenanceService,
+    SettlementResultHistoryService settlementResultHistoryService)
+    : BackgroundService
 {
-    private readonly IMaintenanceService maintenanceService;
-    private readonly SettlementResultHistoryService settlementResultHistoryService;
-    private readonly IConfiguration configuration;
-
-    private bool running;
-
     private int counter;
 
-    public AutoService(
-        IConfiguration configuration,
-        IMaintenanceService maintenanceService,
-        SettlementResultHistoryService settlementResultHistoryService)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        this.configuration = configuration;
-        this.maintenanceService = maintenanceService;
-        this.settlementResultHistoryService = settlementResultHistoryService;
-        InitializeExtraComponent();
-        InitializeSetting();
-    }
+        using PeriodicTimer timer = new(TimeSpan.FromMilliseconds(configuration.GetValue<int>("ServiceInterval")));
 
-    private void InitializeSetting()
-    {
-        StartUmSetting();
-        StartLogSetting();
-    }
-
-    private static void InitializeExtraComponent()
-    {
-        TaskScheduler.UnobservedTaskException += TaskSchedulerUnobservedTaskException;
-    }
-
-    private static void TaskSchedulerUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
-    {
-        e.SetObserved();
-        e.Exception.Handle(x =>
+        while (await timer.WaitForNextTickAsync(stoppingToken))
         {
-            LogService.Error(x.Message, x);
-            return true;
-        });
-    }
-
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        running = true;
-        var autoThread = new Thread(ThreadProcess);
-        Console.WriteLine($"AutoResultAmendmentService Starting at {DateTime.Now}");
-        autoThread.Start();
-        return Task.CompletedTask;
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        running = false;
-        Console.WriteLine($"AutoResultAmendmentService Stopping at {DateTime.Now}");
-        return Task.CompletedTask;
-    }
-
-    private async void ThreadProcess()
-    {
-        while (running)
-        {
-            if (!maintenanceService.IsMaintenance)
-            {
-                Console.WriteLine($"AutoResultAmendmentService Start interval at {DateTime.Now}");
-                await MainProcess();
-                var value = configuration.GetValue("ServiceInterval", "3000");
-                Thread.Sleep(int.Parse(value));
-            }
+            await HandleAutoAsync();
         }
     }
 
-    private async Task MainProcess()
+    private async Task HandleAutoAsync()
     {
         try
         {
-            await settlementResultHistoryService.Handle();
-            HandleGarbageCollector();
+            if (!maintenanceService.IsMaintenance)
+            {
+                await settlementResultHistoryService.Handle();
+                HandleGarbageCollector();
+            }
         }
         catch (Exception exception)
         {
-            await LogService.ErrorAsync("Fanex.AutoResultAmendmentService: ", exception);
+            var logMessage = new LogMessage(exception.Message)
+                .AddSection("Database Info", DatabaseInfoGetters.GetDbExceptionInfo(exception))
+                .AddSection("Server Info", CommonInfoGetters.GetServerInfo())
+                .AddSection("Exception Info", CommonInfoGetters.GetExceptionInfo(exception))
+                .ToString();
+            await LogService.ErrorAsync(logMessage);
         }
     }
 
     private void HandleGarbageCollector()
     {
-        var value = configuration.GetSection("GarbageCollectorInterval").Value;
-        if (value != null && counter >= int.Parse(value))
+        if (counter >= configuration.GetValue<int>("GarbageCollectorInterval"))
         {
             counter = 0;
             GC.WaitForPendingFinalizers();
         }
 
-        var interval = configuration.GetSection("ServiceInterval").Value;
-        if (interval != null)
-        {
-            counter += int.Parse(interval);
-        }
-    }
-
-    private void StartUmSetting()
-    {
-        var umConfig = new UMClientConfiguration().Initialize(configuration);
-
-        UMClientManager
-            .UseConfig(umConfig)
-            .UseCacheService(new UMCacheService(new CacheService()))
-            .UseRestClient(new UMRestClient(umConfig));
-    }
-
-    private void StartLogSetting()
-    {
-        var logEngine = new List<ILogEngine>();
-
-        var sentryEngineOptions = new SentryEngineOptions
-        {
-            Dsn = new Dsn(configuration.GetSection("SentryToken").Value)
-        };
-
-        logEngine.Add(new SentryLogging(sentryEngineOptions));
-
-        LogManager.SetDefaultLogCategory(configuration.GetSection("SiteCategory").Value).Use(logEngine);
-
-        MailAppSettings.AppMailId = configuration.GetSection("MailServer:Id").Value;
-        MailAppSettings.AppMailAddress = configuration.GetSection("MailServer:Address").Value;
+        counter += configuration.GetValue<int>("ServiceInterval");
     }
 }
