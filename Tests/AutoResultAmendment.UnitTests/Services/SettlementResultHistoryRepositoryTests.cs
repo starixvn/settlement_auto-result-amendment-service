@@ -6,7 +6,7 @@ using Fanex.Data.Repository;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 
-namespace AutoResultAmendment.Tests.Services;
+namespace AutoResultAmendment.UnitTests.Services;
 
 public class SettlementResultHistoryRepositoryTests
 {
@@ -35,11 +35,11 @@ public class SettlementResultHistoryRepositoryTests
         var leagueIds = new List<int> { 1, 2, 3 };
         var resultHistory = new List<ResultHistorySettled>
         {
-            new ResultHistorySettled { LeagueId = 1 },
-            new ResultHistorySettled { LeagueId = 2 },
-            new ResultHistorySettled { LeagueId = 3 },
-            new ResultHistorySettled { LeagueId = 4 },
-            new ResultHistorySettled { LeagueId = 5 }
+            new() { LeagueId = 1 },
+            new() { LeagueId = 2 },
+            new() { LeagueId = 3 },
+            new() { LeagueId = 4 },
+            new() { LeagueId = 5 }
         };
 
         dynamicRepository.FetchAsync<ResultHistorySettled>(Arg.Any<SettlementResultHistoryCriteria>()).Returns(resultHistory);
@@ -92,9 +92,9 @@ public class SettlementResultHistoryRepositoryTests
         // Arrange
         var resultHistory = new List<ResultHistorySettled>
         {
-            new ResultHistorySettled { LeagueId = 1, CreatedDate = new DateTime(2022, 1, 1) },
-            new ResultHistorySettled { LeagueId = 2, CreatedDate = new DateTime(2022, 1, 2) },
-            new ResultHistorySettled { LeagueId = 3, CreatedDate = new DateTime(2022, 1, 3) }
+            new() { LeagueId = 1, CreatedDate = new DateTime(2022, 1, 1) },
+            new() { LeagueId = 2, CreatedDate = new DateTime(2022, 1, 2) },
+            new() { LeagueId = 3, CreatedDate = new DateTime(2022, 1, 3) }
         };
 
         dynamicRepository.FetchAsync<ResultHistorySettled>(Arg.Any<SettlementResultHistoryCriteria>()).Returns(resultHistory);
@@ -107,7 +107,7 @@ public class SettlementResultHistoryRepositoryTests
     }
 
     [Fact]
-    public async Task InsLetsTalkMessage_EnvironmentPRO_ShouldExecuteDynamicRepository()
+    public void InsLetsTalkMessage_EnvironmentPRO_ShouldExecuteDynamicRepository()
     {
         // Arrange
         var item = new ResultHistorySettled

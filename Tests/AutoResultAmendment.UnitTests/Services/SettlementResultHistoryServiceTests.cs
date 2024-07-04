@@ -1,13 +1,11 @@
-using System.Net.Mail;
 using AutoResultAmendment.Constants;
 using AutoResultAmendment.Models;
 using AutoResultAmendment.Services;
-
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using MailAppSettings = Fanex.MailDeliver.MailClient.AppSettings;
 
-namespace AutoResultAmendment.Tests.Services;
+namespace AutoResultAmendment.UnitTests.Services;
 
 public class SettlementResultHistoryServiceTests
 {
@@ -34,10 +32,12 @@ public class SettlementResultHistoryServiceTests
         // Arrange
         var resultHistoryItems = new List<ResultHistorySettled>
         {
-            new ResultHistorySettled { HasError = false, IsCalculated = true, IsDoneBalNeg = true },
+            new() { HasError = false, IsCalculated = true, IsDoneBalNeg = true },
         };
         resultHistoryRepository.GetResultHistoryByEnv().Returns(resultHistoryItems);
-        resultHistoryRepository.CheckResultHistoryError(Arg.Any<ResultHistorySettled>()).Returns(new List<FailureResultHistory> { new() { SessionId = "abc" } });
+        resultHistoryRepository.CheckResultHistoryError(Arg.Any<ResultHistorySettled>()).Returns([
+            new() { SessionId = "abc" }
+        ]);
 
         // Act
         await service.Handle();
@@ -55,7 +55,9 @@ public class SettlementResultHistoryServiceTests
             new () { HasError = true },
         };
         resultHistoryRepository.GetResultHistoryByEnv().Returns(resultHistoryItems);
-        resultHistoryRepository.CheckResultHistoryError(Arg.Any<ResultHistorySettled>()).Returns(new List<FailureResultHistory> { new() { SessionId = "abc" } });
+        resultHistoryRepository.CheckResultHistoryError(Arg.Any<ResultHistorySettled>()).Returns([
+            new() { SessionId = "abc" }
+        ]);
 
         // Act
         await service.Handle();
@@ -75,7 +77,9 @@ public class SettlementResultHistoryServiceTests
             item
         };
         resultHistoryRepository.GetResultHistoryByEnv().Returns(resultHistoryItems);
-        resultHistoryRepository.CheckResultHistoryError(Arg.Any<ResultHistorySettled>()).Returns(new List<FailureResultHistory> { new() { SessionId = "abc" } });
+        resultHistoryRepository.CheckResultHistoryError(Arg.Any<ResultHistorySettled>()).Returns([
+            new() { SessionId = "abc" }
+        ]);
         MailAppSettings.AppMailId = "1";
         MailAppSettings.AppMailAddress = "http://10.18.200.131:8787/";
         // Act
