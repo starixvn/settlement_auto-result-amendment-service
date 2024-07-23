@@ -45,11 +45,7 @@ public class SettlementResultHistoryRepositoryImp(
         var (_, leagueId) = await cache.TryGetAsync<int>(CacheKeys.LeagueIdForTest);
         var (_, leagueIdsStr) = await cache.TryGetAsync<string>(CacheKeys.LeagueIdsTest);
 
-        var item = (leagueIdsStr ?? string.Empty).Split(',').Select(x =>
-        {
-            int value;
-            return int.TryParse(x, out value) ? value : 0;
-        }).ToList();
+        var item = (leagueIdsStr ?? string.Empty).Split(',').Select(x => int.TryParse(x, out int value) ? value : 0).ToList();
 
         result.Add(leagueId);
         result.AddRange(item);
@@ -84,7 +80,10 @@ public class SettlementResultHistoryRepositoryImp(
 
     public void InsLetsTalkMessage(ResultHistorySettled item)
     {
-        if (appSettings.Value.EnvironmentName != "PRO") { return; }
+        if (appSettings.Value.EnvironmentName != "PRO")
+        {
+            return;
+        }
 
         var message = $"<p>Hey guys, Result Amendment Notification at {item.DbServer} has not been completed" +
             "</br>Please check data at <b>bodb02.dbo.SettlementResultHistory</b>" +

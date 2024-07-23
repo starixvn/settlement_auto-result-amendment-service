@@ -1,5 +1,7 @@
 ﻿namespace AutoResultAmendment.Criteria;
 
+#nullable disable
+
 public class ResultHistoryTicketDetailInsCriteria : NonQueryCommand
 {
     public int MatchId { get; set; }
