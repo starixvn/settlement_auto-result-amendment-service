@@ -11,7 +11,6 @@ namespace AutoResultAmendment.UnitTests.Services;
 public class SettlementResultHistoryRepositoryTests
 {
     private readonly IDynamicRepository dynamicRepository;
-    private readonly ICache cache;
     private readonly SettlementResultHistoryRepository repository;
 
     public SettlementResultHistoryRepositoryTests()
@@ -24,7 +23,7 @@ public class SettlementResultHistoryRepositoryTests
 
         var appSettingsOptions = Options.Create(settings);
         dynamicRepository = Substitute.For<IDynamicRepository>();
-        cache = Substitute.For<ICache>();
+        var cache = Substitute.For<ICache>();
         repository = new SettlementResultHistoryRepositoryImp(appSettingsOptions, dynamicRepository, cache);
     }
 
@@ -32,7 +31,6 @@ public class SettlementResultHistoryRepositoryTests
     public async Task GetResultHistoryByEnv_WhenPROEnvironment_ReturnsFilteredResult()
     {
         // Arrange
-        var leagueIds = new List<int> { 1, 2, 3 };
         var resultHistory = new List<ResultHistorySettled>
         {
             new() { LeagueId = 1 },

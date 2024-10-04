@@ -16,7 +16,7 @@ public class ResultHistorySettled
     public bool HasError { get; set; }
     public string DbServer { get; set; } = string.Empty;
 
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         return obj is ResultHistorySettled item
                && item.SessionId == SessionId
