@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AutoResultAmendment\AutoResultAmendment.csproj" />
+    <ProjectReference Include="..\ResultAmendment\ResultAmendment.csproj" />
+    <ProjectReference Include="..\SettlementResultHistory\SettlementResultHistory.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -24,11 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Xunit" />
+    <ProjectReference Include="..\..\src\SettlementResultHistory\SettlementResultHistory.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Sources\AutoResultAmendment\AutoResultAmendment.csproj" />
+    <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>

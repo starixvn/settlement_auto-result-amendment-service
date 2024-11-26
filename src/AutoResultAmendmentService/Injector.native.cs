@@ -4,6 +4,7 @@ using Fanex.Caching.Redis;
 using Fanex.Data.Repository;
 using Fanex.Logging;
 using Fanex.Logging.Sentry.RavenClient;
+using Fanex.Settlement.Converter.Services;
 using ONEbook.UM;
 using ONEbook.UM.AspNetCore;
 using ONEbook.UM.Configurations;
@@ -26,6 +27,7 @@ public static class Injector
         services.AddSingleton<IUMCacheService, UMCacheService>();
         services.AddSingleton<IUMRestClient, UMRestClient>();
         services.AddSingleton<ONEbook.UM.Services.IMaintenanceService, ONEbook.UM.Services.MaintenanceService>();
+        services.AddSingleton<XmlConvertService, XmlConvertServiceImp>();
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

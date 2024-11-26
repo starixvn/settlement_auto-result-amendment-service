@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Functions>
-
 	<Function Name="NAP_SettlementResultHistory_Schedule">
 		<Setting Key="NAP_SettlementResultHistory_Schedule_DBSITE01" SpName="NAP_SettlementResultHistory_Schedule" DbName="DBSITE01.bodb02.wsv_nap" />
 		<Setting Key="NAP_SettlementResultHistory_Schedule_DBSITE02" SpName="NAP_SettlementResultHistory_Schedule" DbName="DBSITE02.bodb02.wsv_nap" />
@@ -27,5 +26,19 @@
 
 	<Function Name="DBA_Send_Letstalk">
 		<Setting Key="DBA_Send_Letstalk" SpName="DBA_Send_Letstalk" DbName="DBTXN.bodb02.wsv_nap" />
+	</Function>
+	<Function Name="NAP_SettlementResultHistory_Ins">
+		<Setting Key="NAP_SettlementResultHistory_Ins_DBSITE01" SpName="NAP_SettlementResultHistory_Ins" DbName="DBSITE01.bodb02.wsv_nap" />
+		<Setting Key="NAP_SettlementResultHistory_Ins_DBSITE02" SpName="NAP_SettlementResultHistory_Ins" DbName="DBSITE02.bodb02.wsv_nap" />
+		<Setting Key="NAP_SettlementResultHistory_Ins_DBSITE03" SpName="NAP_SettlementResultHistory_Ins" DbName="DBSITE03.bodb02.wsv_nap" />
+	</Function>
+	<Function Name="NAP_SettlementResultHistory_Update">
+		<Setting Key="NAP_SettlementResultHistory_Update_DBSITE01" SpName="NAP_SettlementResultHistory_Update" DbName="DBSITE01.bodb02.wsv_nap" />
+		<Setting Key="NAP_SettlementResultHistory_Update_DBSITE02" SpName="NAP_SettlementResultHistory_Update" DbName="DBSITE02.bodb02.wsv_nap" />
+		<Setting Key="NAP_SettlementResultHistory_Update_DBSITE03" SpName="NAP_SettlementResultHistory_Update" DbName="DBSITE03.bodb02.wsv_nap" />
+	</Function>
+
+	<Function Name="NAP_Admin_MajorRound_Sel">
+		<Setting Key="NAP_Admin_MajorRound_Sel" SpName="NAP_Admin_MajorRound_Sel" DbName="DBPRO.bodb02.wsv_nap" />
 	</Function>
 </Functions>
