@@ -1,12 +1,12 @@
 ﻿using Fanex.Data;
 using Fanex.Data.Repository;
 
-namespace ResultAmendment.Features.ResultHistoryUpdate;
+namespace ResultAmendment.Features.UpdateSettlementResultHistory;
 
-public class ResultHistoryUpdateCriteria : NonQueryCommand
+public class UpdateSettlementResultHistoryCriteria : NonQueryCommand
 {
     public int MatchId { get; set; }
-    public short? StatusId { get; set; }
+    public short? StatusId { get; set; } = -1;
     public string SessionIds { get; set; }
 
     [SpParam(Ignored = true)]

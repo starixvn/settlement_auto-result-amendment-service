@@ -5,6 +5,7 @@ namespace AutoResultAmendment.Services;
 
 using Constants;
 using Models;
+using Shared;
 
 public interface SettlementResultHistoryService
 {

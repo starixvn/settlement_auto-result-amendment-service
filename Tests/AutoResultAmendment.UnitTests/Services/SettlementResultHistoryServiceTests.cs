@@ -3,6 +3,7 @@ using AutoResultAmendment.Models;
 using AutoResultAmendment.Services;
 using Microsoft.Extensions.Options;
 using NSubstitute;
+using Shared;
 using MailAppSettings = Fanex.MailDeliver.MailClient.AppSettings;
 
 namespace AutoResultAmendment.UnitTests.Services;

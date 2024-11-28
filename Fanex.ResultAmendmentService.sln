@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoResultAmendment.UnitTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultAmendment", "src\ResultAmendment\ResultAmendment.csproj", "{FD657164-0B41-4B38-B54E-F6B9B2708634}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "src\Shared\Shared.csproj", "{FD3E19EC-4BAE-4D12-90BF-291C0D206598}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{FD657164-0B41-4B38-B54E-F6B9B2708634}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD657164-0B41-4B38-B54E-F6B9B2708634}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD657164-0B41-4B38-B54E-F6B9B2708634}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD3E19EC-4BAE-4D12-90BF-291C0D206598}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD3E19EC-4BAE-4D12-90BF-291C0D206598}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD3E19EC-4BAE-4D12-90BF-291C0D206598}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD3E19EC-4BAE-4D12-90BF-291C0D206598}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 		{EEDF402A-E2E7-4991-AE72-8E2EF7735B06} = {81FCA585-A523-40E6-9134-94DE90B0DA83}
 		{2D7809AB-9BA9-46A8-AB94-B8D467A28FB4} = {B6613EA5-B44C-4E7B-82B0-032D69F40957}
 		{FD657164-0B41-4B38-B54E-F6B9B2708634} = {81FCA585-A523-40E6-9134-94DE90B0DA83}
+		{FD3E19EC-4BAE-4D12-90BF-291C0D206598} = {81FCA585-A523-40E6-9134-94DE90B0DA83}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CE641A9C-9444-4515-B262-B904C4EBC9F1}

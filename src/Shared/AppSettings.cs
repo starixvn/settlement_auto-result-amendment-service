@@ -1,5 +1,4 @@
-﻿namespace AutoResultAmendment.Models;
-
+﻿namespace Shared;
 public class AppSettings
 {
     public string[] SiteDbServer { get; set; } = [];

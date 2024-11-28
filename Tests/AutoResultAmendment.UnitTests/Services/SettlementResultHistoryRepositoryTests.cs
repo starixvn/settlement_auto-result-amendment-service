@@ -5,6 +5,7 @@ using Fanex.Caching;
 using Fanex.Data.Repository;
 using Microsoft.Extensions.Options;
 using NSubstitute;
+using Shared;
 
 namespace AutoResultAmendment.UnitTests.Services;
 

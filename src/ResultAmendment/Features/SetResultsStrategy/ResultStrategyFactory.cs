@@ -1,5 +1,4 @@
-﻿
-using ResultAmendment.Features.SetResultsStrategy.Strategies;
+﻿using ResultAmendment.Features.SetResultsStrategy.Strategies;
 
 namespace ResultAmendment.Features.SetResultsStrategy;
 
@@ -9,6 +8,7 @@ public static class ResultStrategyFactory
     {
         string[] laneResultPatter = ["9113", "9114", "9130", "9135", "9138"];
         string[] yesNoResultPattern = ["9124", "9132", "9133", "9075", "9087"];
+
 
         return resourceId switch
         {
@@ -27,10 +27,10 @@ public static class ResultStrategyFactory
             _ when resourceId.Length == 6 => new MapXResultStrategy(),
 
             // 1234_XX_YY
+            _ when resourceId.Length == 8 && resourceId.StartsWith("9101") => new TeamXYOrdinalResultStrategy(), // GroupBetType 6, 7, 8, 9, 10
             _ when resourceId.Length == 8 && GroupBetTypes.Team.Contains(GroupBetType) => new TeamXXYYResultStrategy(), //e3, e5  GroupBetType 0, 1, 2
             _ when resourceId.Length == 8 && GroupBetTypes.Duration == GroupBetType => new TimeKillsResultStrategy(), //e7 // GroupBetType 5
             _ when resourceId.Length == 8 => new MapXYResultStrategy(), //e4
-
 
             _ => new MainResultStrategy()
         };

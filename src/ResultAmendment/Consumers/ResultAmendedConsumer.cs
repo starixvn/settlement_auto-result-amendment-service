@@ -2,40 +2,33 @@
 using Microsoft.Extensions.Logging;
 using ResultAmendment.Contracts;
 using ResultAmendment.Features.AddSettlementResultHistory;
+using ResultAmendment.Features.UpdateSettlementResultHistory;
 
 namespace ResultAmendment.Consumers;
 
-public sealed class ResultAmendedConsumer : IConsumer<ResultAmended>
+public sealed class ResultAmendedConsumer : IConsumer<ResultAmended>, IConsumer<ResultAmendSettled>
 {
     private readonly ILogger<ResultAmendedConsumer> _logger;
-    private readonly SettlementResultHistoryHandler _handler;
+    private readonly AddSettlementResultHistoryHandler addHandler;
+    private readonly UpdateSettlementResultHistoryHandler updateHandler;
 
-    public ResultAmendedConsumer(ILogger<ResultAmendedConsumer> logger, SettlementResultHistoryHandler handler)
+    public ResultAmendedConsumer(ILogger<ResultAmendedConsumer> logger, AddSettlementResultHistoryHandler addHandler, UpdateSettlementResultHistoryHandler updateHandler)
     {
         _logger = logger;
-        _handler = handler;
+        this.addHandler = addHandler;
+        this.updateHandler = updateHandler;
     }
 
     public async Task Consume(ConsumeContext<ResultAmended> context)
     {
-        _logger.LogInformation("ResultAmendedConsumer: {MatchId}", context.Message.MatchId);
+        _logger.LogInformation("ResultAmendedConsumer: {0}", context.Message);
 
-        await _handler.HandleAsync(context.Message);
+        await addHandler.HandleAsync(context.Message);
     }
 
-
-    private static short GetReSettleActionType(string beforeAction, string currentAction)
+    public async Task Consume(ConsumeContext<ResultAmendSettled> context)
     {
-        var before = beforeAction.ToUpperInvariant();
-        var current = currentAction.ToUpperInvariant();
-
-        return (before, current) switch
-        {
-            var (b, c) when b.Contains(ActionType.RefundAll) && c.Contains(ActionType.CalculateAll) => ReSettleType.RefundToCalc,
-            var (b, c) when b.Contains(ActionType.CalculateAll) && c.Contains(ActionType.RefundAll) => ReSettleType.CalcToRefund,
-            var (b, c) when b.Contains(ActionType.CalculateAll) && c.Contains(ActionType.CalculateAll) => ReSettleType.ReCalc,
-            _ => ReSettleType.UnKnow
-        };
+        _logger.LogInformation("ResultAmendSettled: {0}", context.Message);
+        await updateHandler.HandlerAsync(context.Message);
     }
-
 }

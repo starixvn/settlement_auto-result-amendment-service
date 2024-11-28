@@ -36,7 +36,9 @@ public class ResultItem
     [XmlAttribute("OtherInfo")]
     public string OtherInfo { get; set; }
 
+    [XmlAttribute("O")]
+    public string Ordinal { get; set; }
 
-    [XmlAttribute("OtherInfo")]
+    [XmlAttribute("GroupBetType")]
     public string GroupBetType { get; set; }
 }

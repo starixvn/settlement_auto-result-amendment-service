@@ -15,7 +15,6 @@ public static class ResultInfoHelpers
         };
     }
 
-
     public static string NormalizeHomeValue(string homeValue) => homeValue == "N" ? "None" : homeValue;
 
     public static string FormatTimeValue(string value)

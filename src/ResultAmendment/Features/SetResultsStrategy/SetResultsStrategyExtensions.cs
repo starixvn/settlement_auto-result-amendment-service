@@ -7,17 +7,18 @@ public static class SetResultsStrategyExtensions
 {
     public static IServiceCollection AddSetResultsStrategy(this IServiceCollection services)
     {
-        services.AddScoped<ISetResultStrategy, MainResultStrategy>();
-        services.AddScoped<ISetResultStrategy, TeamResultStrategy>();
-        services.AddScoped<ISetResultStrategy, TeamXXResultStrategy>();
-        services.AddScoped<ISetResultStrategy, TeamXXYYResultStrategy>();
-        services.AddScoped<ISetResultStrategy, MapXResultStrategy>();
-        services.AddScoped<ISetResultStrategy, MapXYResultStrategy>();
-        services.AddScoped<ISetResultStrategy, MapXLaneResultStrategy>();
-        services.AddScoped<ISetResultStrategy, MapXOverlordTyrantResultStrategy>();
-        services.AddScoped<ISetResultStrategy, TimeKillsResultStrategy>();
-        services.AddScoped<ISetResultStrategy, TimeResultStrategy>();
-        services.AddScoped<ISetResultStrategy, MapXYesNoResultStrategy>();
+        services.AddSingleton<ISetResultStrategy, MainResultStrategy>();
+        services.AddSingleton<ISetResultStrategy, TeamResultStrategy>();
+        services.AddSingleton<ISetResultStrategy, TeamXXResultStrategy>();
+        services.AddSingleton<ISetResultStrategy, TeamXXYYResultStrategy>();
+        services.AddSingleton<ISetResultStrategy, MapXResultStrategy>();
+        services.AddSingleton<ISetResultStrategy, MapXYResultStrategy>();
+        services.AddSingleton<ISetResultStrategy, MapXLaneResultStrategy>();
+        services.AddSingleton<ISetResultStrategy, MapXOverlordTyrantResultStrategy>();
+        services.AddSingleton<ISetResultStrategy, TimeKillsResultStrategy>();
+        services.AddSingleton<ISetResultStrategy, TimeResultStrategy>();
+        services.AddSingleton<ISetResultStrategy, TeamXYOrdinalResultStrategy>();
+        services.AddSingleton<ISetResultStrategy, MapXYesNoResultStrategy>();
 
         return services;
     }

@@ -24,7 +24,7 @@ public class GetMainResourceHandler
                 return await GetMainResource(sportType);
             });
 
-        return cachedValue;
+        return cachedValue ?? [];
     }
 
     private async Task<List<string>> GetMainResource(int sportType)

@@ -7,7 +7,5 @@ public record class ResultAmended(
     string BroadcastSessionId,
     int SportType,
     string Action,
-    int? HomeId,
-    int? AwayId,
     List<ResourceItem> SelectedResources,
     List<ResultChanged> ResultsChanged);

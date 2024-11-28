@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ResultAmendment.Consumers;
 using ResultAmendment.Features.AddSettlementResultHistory;
 using ResultAmendment.Features.GetMainResource;
+using ResultAmendment.Features.UpdateSettlementResultHistory;
 
 namespace ResultAmendment;
 
@@ -14,8 +15,10 @@ public static class ResultAmendmentModuleExtensions
     {
         builder.Services
             .AddMemoryCache()
-            .AddScoped<SettlementResultHistoryHandler>()
+            .AddScoped<AddSettlementResultHistoryHandler>()
+            .AddScoped<UpdateSettlementResultHistoryHandler>()
             .AddScoped<GetMainResourceHandler>()
+
             .AddMapster();
 
         return builder;
