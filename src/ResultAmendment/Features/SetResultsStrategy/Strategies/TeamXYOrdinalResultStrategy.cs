@@ -38,9 +38,5 @@ public class TeamXYOrdinalResultStrategy : ISetResultStrategy
         return (wrongResult, actualResult);
     }
 
-    private string CreateOrdinal(int pointY)
-    {
-        if (pointY <= 4) return $"K{pointY}";
-        return "K4";
-    }
+    private string CreateOrdinal(int pointY) => pointY <= 4 ? $"K{pointY}" : "K4";
 }

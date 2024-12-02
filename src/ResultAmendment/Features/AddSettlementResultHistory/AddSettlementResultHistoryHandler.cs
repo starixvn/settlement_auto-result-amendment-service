@@ -89,8 +89,11 @@ public class AddSettlementResultHistoryHandler
 
         foreach (var item in resultsChanged)
         {
-            var resourceItem = selectedResources.FirstOrDefault(x => x.ResourceId == item.ResourceId);
-            if (resourceItem == null) continue;
+            var resourceItem = selectedResources.Find(x => x.ResourceId == item.ResourceId);
+            if (resourceItem == null)
+            {
+                continue;
+            }
 
             var strategy = ResultStrategyFactory.GetStrategy(item.ResourceId, resourceItem.GroupBetType, mainResourceIds);
             var (wrongResult, actualResult) = strategy.Generate(item, resourceItem);

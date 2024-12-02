@@ -26,7 +26,7 @@ public static class ResultInfoHelpers
 
         if (value.StartsWith('-'))
         {
-            var absoluteValue = value[1..].ToString();
+            var absoluteValue = value[1..];
             return "-" + int.Parse(absoluteValue).ToString("D2");
         }
 

@@ -14,7 +14,7 @@ public static class ResultStrategyFactory
         {
             _ when mainResource.Contains(resourceId) => new MainResultStrategy(),
 
-            "604" or "603" => new TeamResultStrategy(),
+            "604" or "605" => new TeamResultStrategy(),
             _ when resourceId.StartsWith("606") || resourceId.StartsWith("607") || resourceId.StartsWith("617") => new TeamXXResultStrategy(),
             _ when resourceId.StartsWith("613") => new TeamXXYYResultStrategy(),
 
