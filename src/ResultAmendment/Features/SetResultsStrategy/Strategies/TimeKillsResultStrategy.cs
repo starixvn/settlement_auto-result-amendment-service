@@ -18,7 +18,7 @@ public class TimeKillsResultStrategy : ISetResultStrategy // Es : E7
             RefBetTypeId = betTypeId,
             SetX = $"{mapX}",
             PointY = $"{killY}",
-            GroupBetType = "5",
+            GroupBetType = $"{resourceItem.GroupBetType}",
         };
 
         var actualResult = new ResultItem
@@ -29,7 +29,7 @@ public class TimeKillsResultStrategy : ISetResultStrategy // Es : E7
             RefBetTypeId = betTypeId,
             SetX = $"{mapX}",
             PointY = $"{killY}",
-            GroupBetType = "5",
+            GroupBetType = $"{resourceItem.GroupBetType}",
         };
 
         return (wrongResult, actualResult);

@@ -15,13 +15,13 @@ public class AddSettlementResultHistoryHandler
 {
     private readonly IDynamicRepository repository;
     private readonly XmlConvertService xmlConvertService;
-    private readonly GetMainResourceHandler getMainResourceHandler;
+    private readonly IGetMainResourceHandler getMainResourceHandler;
     private readonly IOptions<AppSettings> appSettings;
 
     public AddSettlementResultHistoryHandler(
         IDynamicRepository repository,
         XmlConvertService xmlConvertService,
-        GetMainResourceHandler getMainResourceHandler,
+        IGetMainResourceHandler getMainResourceHandler,
         IOptions<AppSettings> appSettings)
     {
         this.repository = repository;
@@ -32,37 +32,36 @@ public class AddSettlementResultHistoryHandler
 
     public async Task HandleAsync(ResultAmended resultAmended)
     {
-        try
-        {
-            var mainResourceIds = await getMainResourceHandler.HandlerAsync(resultAmended.SportType);
+        var mainResourceIds = await getMainResourceHandler.HandlerAsync(resultAmended.SportType);
 
-            var groupedResults = GetTicketsGroupByResettleType(resultAmended.Action, resultAmended.ResultsChanged);
-            var resultHistoryItems = groupedResults.Select((group, index) =>
+        var groupedResults = GetTicketsGroupByResettleType(resultAmended.Action, resultAmended.ResultsChanged);
+        var resultHistoryItems = groupedResults.Select((group, index) =>
+        {
+            var context = new CreateResultHistoryItemContext
             {
-                var context = new CreateResultHistoryItemContext
-                {
-                    ResultsChanged = group.ToList(),
-                    SelectedResources = resultAmended.SelectedResources,
-                    ActionType = group.Key,
-                    SequenceNumber = index + 1,
-                    MainResourceIds = mainResourceIds
-                };
+                ResultsChanged = group.ToList(),
+                SelectedResources = resultAmended.SelectedResources,
+                ActionType = group.Key,
+                SequenceNumber = index + 1,
+                MainResourceIds = mainResourceIds
+            };
 
-                return CreateResultHistoryItem(context);
-            }).ToList();
+            return CreateResultHistoryItem(context);
+        }).ToList();
 
-            var criteria = new AddResultHistoryInsCriteria(
-                resultAmended.MatchId,
-                resultAmended.SportType,
-                resultAmended.BroadcastSessionId,
-                JsonSerializer.Serialize(resultHistoryItems));
 
-            await ExecSettleResultHistoryInsAllSites(criteria);
-        }
-        catch (Exception ex)
+        if (resultHistoryItems.Count == 0)
         {
-            Console.WriteLine(ex);
+            return;
         }
+
+        var criteria = new AddResultHistoryInsCriteria(
+            resultAmended.MatchId,
+            resultAmended.SportType,
+            resultAmended.BroadcastSessionId,
+            JsonSerializer.Serialize(resultHistoryItems));
+
+        await ExecSettleResultHistoryInsAllSites(criteria);
     }
 
     private async Task ExecSettleResultHistoryInsAllSites(AddResultHistoryInsCriteria criteria)

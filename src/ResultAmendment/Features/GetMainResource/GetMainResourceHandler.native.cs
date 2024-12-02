@@ -3,7 +3,12 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace ResultAmendment.Features.GetMainResource;
 
-public class GetMainResourceHandler
+public interface IGetMainResourceHandler
+{
+    Task<List<string>> HandlerAsync(int sportType);
+}
+
+public class GetMainResourceHandler : IGetMainResourceHandler
 {
     private readonly IDynamicRepository repository;
     private readonly IMemoryCache memoryCache;

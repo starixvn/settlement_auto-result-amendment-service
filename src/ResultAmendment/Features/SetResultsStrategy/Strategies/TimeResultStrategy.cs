@@ -16,7 +16,7 @@ public class TimeResultStrategy : ISetResultStrategy // Es : E6
             Away = ResultInfoHelpers.FormatTimeValue(resultChanged.AwayValue),
             RefBetTypeId = betTypeId,
             SetX = $"{mapX}",
-            GroupBetType = "5",
+            GroupBetType = $"{resourceItem.GroupBetType}",
         };
 
         var actualResult = new ResultItem
@@ -26,7 +26,7 @@ public class TimeResultStrategy : ISetResultStrategy // Es : E6
             Away = ResultInfoHelpers.FormatTimeValue(resourceItem.AwayValue),
             RefBetTypeId = betTypeId,
             SetX = $"{mapX}",
-            GroupBetType = "5",
+            GroupBetType = $"{resourceItem.GroupBetType}",
         };
 
         return (wrongResult, actualResult);

@@ -6,7 +6,7 @@ using NSubstitute;
 using Shared;
 using MailAppSettings = Fanex.MailDeliver.MailClient.AppSettings;
 
-namespace AutoResultAmendment.UnitTests.Services;
+namespace SettlementResultHistory.UnitTests.Services;
 
 public class SettlementResultHistoryServiceTests
 {

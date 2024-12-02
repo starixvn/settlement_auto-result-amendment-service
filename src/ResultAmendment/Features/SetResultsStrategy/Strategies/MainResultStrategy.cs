@@ -5,6 +5,9 @@ public class MainResultStrategy : ISetResultStrategy
 {
     public (ResultItem wrongResult, ResultItem actualResult) Generate(ResultChanged resultChanged, ResourceItem resourceItem)
     {
+        ArgumentNullException.ThrowIfNull(resultChanged);
+        ArgumentNullException.ThrowIfNull(resourceItem);
+
         var wrongResult = new ResultItem
         {
             ResourceId = resultChanged.ResourceId,

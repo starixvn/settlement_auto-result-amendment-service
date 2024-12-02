@@ -17,7 +17,7 @@ public static class ResultAmendmentModuleExtensions
             .AddMemoryCache()
             .AddScoped<AddSettlementResultHistoryHandler>()
             .AddScoped<UpdateSettlementResultHistoryHandler>()
-            .AddScoped<GetMainResourceHandler>()
+            .AddScoped<IGetMainResourceHandler, GetMainResourceHandler>()
 
             .AddMapster();
 

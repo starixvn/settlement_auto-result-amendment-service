@@ -6,7 +6,7 @@ public class TeamXYOrdinalResultStrategy : ISetResultStrategy
 {
     public (ResultItem wrongResult, ResultItem actualResult) Generate(ResultChanged resultChanged, ResourceItem resourceItem)
     {
-        var resourceId = resultChanged.ResourceId; //613XXYY, 9068XXYY, 9069XXYY
+        var resourceId = resultChanged.ResourceId;
         var betTypeId = resultChanged.ResourceId[..^4];
 
         var setX = Convert.ToInt16(resourceId[^4..^2]);// set, map , game
