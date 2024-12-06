@@ -87,16 +87,16 @@ public class AddSettlementResultHistoryHandler
         var wrongResults = new List<ResultItem>();
         var actualResults = new List<ResultItem>();
 
-        foreach (var item in resultsChanged)
+        foreach (var item in selectedResources)
         {
-            var resourceItem = selectedResources.Find(x => x.ResourceId == item.ResourceId);
-            if (resourceItem == null)
+            var resultChanged = resultsChanged.Find(x => x.ResourceId == item.ResourceId);
+            if (resultChanged == null)
             {
                 continue;
             }
 
-            var strategy = ResultStrategyFactory.GetStrategy(item.ResourceId, resourceItem.GroupBetType, mainResourceIds);
-            var (wrongResult, actualResult) = strategy.Generate(item, resourceItem);
+            var strategy = ResultStrategyFactory.GetStrategy(item.ResourceId, item.GroupBetType, mainResourceIds);
+            var (wrongResult, actualResult) = strategy.Generate(resultChanged, item);
 
             wrongResults.Add(wrongResult);
             actualResults.Add(actualResult);
@@ -117,7 +117,7 @@ public class AddSettlementResultHistoryHandler
             SeqNo = context.SequenceNumber,
             WrongResult = xmlConvertService.Serialize(new ResultInfo { ResultItems = wrongResults }),
             ActualResult = xmlConvertService.Serialize(new ResultInfo { ResultItems = actualResults }),
-            ExtraInfo = GenerateExtraInfo(context.ResultsChanged),
+            ExtraInfo = GenerateExtraInfo(context.SelectedResources, context.ResultsChanged),
             ActionType = context.ActionType
         };
     }
@@ -152,13 +152,17 @@ public class AddSettlementResultHistoryHandler
         };
     }
 
-    private string GenerateExtraInfo(List<ResultChanged> resultsChanged)
+    private string GenerateExtraInfo(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged)
     {
-        var extraInfoItems = resultsChanged.Select(x => new ExtraInfoItem
+        var extraInfoItems = selectedResources.Select(x =>
         {
-            ResourceId = x.ResourceId,
-            CalcDateTime = x.LogDate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
-            ReCalcDateTime = DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
+            var resultChanged = resultsChanged.Find(y => y.ResourceId == x.ResourceId);
+            return new ExtraInfoItem
+            {
+                ResourceId = resultChanged?.ResourceId,
+                CalcDateTime = resultChanged?.LogDate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                ReCalcDateTime = DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
+            };
         }).ToList();
 
         var extraInfo = new ExtraInfo { ExtraInfoItems = extraInfoItems };
