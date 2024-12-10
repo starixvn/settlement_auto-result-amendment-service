@@ -38,7 +38,7 @@ public class MapXLaneResultStrategy : ISetResultStrategy
             "NT" => "MB", // Middle Bottom
             "M" => "M", // Middle
             "NM" => "TB", // Top Bottom
-            "B" => "B", // Bottom
+            "B" => "Bottom", // Bottom
             "NB" => "TM", // Top Middle
             "O" => "O", // Overlord
             "N" => "None", // None

@@ -154,16 +154,25 @@ public class AddSettlementResultHistoryHandler
 
     private string GenerateExtraInfo(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged)
     {
-        var extraInfoItems = selectedResources.Select(x =>
+        var extraInfoItems = new List<ExtraInfoItem>();
+
+        foreach (var resource in selectedResources)
         {
-            var resultChanged = resultsChanged.Find(y => y.ResourceId == x.ResourceId);
-            return new ExtraInfoItem
+            var resultChanged = resultsChanged.Find(y => y.ResourceId == resource.ResourceId);
+            if (resultChanged == null)
             {
-                ResourceId = resultChanged?.ResourceId,
-                CalcDateTime = resultChanged?.LogDate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                continue;
+            }
+
+            var extraInfoItem = new ExtraInfoItem
+            {
+                ResourceId = resultChanged.ResourceId,
+                CalcDateTime = resultChanged.LogDate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
                 ReCalcDateTime = DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
             };
-        }).ToList();
+
+            extraInfoItems.Add(extraInfoItem);
+        }
 
         var extraInfo = new ExtraInfo { ExtraInfoItems = extraInfoItems };
 

@@ -55,7 +55,7 @@ public class SettlementResultHistoryServiceImp(
         }
         catch (Exception ex)
         {
-            await LogService.ErrorAsync("Fanex.AutoResultAmendmentService: ", ex);
+            await LogService.ErrorAsync($"Fanex.AutoResultAmendmentService: {item.ToString()}", ex);
         }
     }
 
