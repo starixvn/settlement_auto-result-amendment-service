@@ -44,8 +44,8 @@ public class TeamXXResultStrategyTests
         Assert.Equal("1234", actualResult.RefBetTypeId);
         Assert.Equal("2", wrongResult.SetX);
         Assert.Equal("2", actualResult.SetX);
-        Assert.Equal("2222", wrongResult.TeamIds);
-        Assert.Equal("1111", actualResult.TeamIds);
+        Assert.Equal("1111", wrongResult.TeamIds);
+        Assert.Equal("2222", actualResult.TeamIds);
     }
 
     [Fact]

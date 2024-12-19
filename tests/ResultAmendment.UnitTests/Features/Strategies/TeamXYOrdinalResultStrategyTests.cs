@@ -32,8 +32,8 @@ public class TeamXYOrdinalResultStrategyTests
         var (wrongResult, actualResult) = strategy.Generate(resultChanged, resourceItem);
 
         // Assert
-        Assert.Equal("12340404", wrongResult.ResourceId);
-        Assert.Equal("12340404", actualResult.ResourceId);
+        Assert.Equal("12340402", wrongResult.ResourceId);
+        Assert.Equal("12340402", actualResult.ResourceId);
         Assert.Equal("A", wrongResult.Home);
         Assert.Equal("None", actualResult.Home);
         Assert.Empty(wrongResult.Away);

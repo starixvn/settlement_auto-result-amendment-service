@@ -16,7 +16,7 @@ public class MapXLaneResultStrategyTests
     [InlineData("NT", "MB")]
     [InlineData("M", "M")]
     [InlineData("NM", "TB")]
-    [InlineData("B", "B")]
+    [InlineData("B", "Bottom")]
     [InlineData("NB", "TM")]
     [InlineData("O", "O")]
     [InlineData("N", "None")]
