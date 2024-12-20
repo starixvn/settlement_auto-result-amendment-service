@@ -1,4 +1,4 @@
-﻿namespace AutoResultAmendment.Criteria;
+﻿namespace SettlementResultHistory.Criteria;
 
 public class LetstalkMessageInsCriteria : NonQueryCommand
 {

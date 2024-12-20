@@ -1,8 +1,8 @@
-﻿using AutoResultAmendment.Services;
-using Fanex.Logging;
+﻿using Fanex.Logging;
 using Fanex.Logging.Extensions;
 using Fanex.Logging.Extensions.Database;
 using ONEbook.UM.Services;
+using SettlementResultHistory.Services;
 
 namespace AutoResultAmendmentService;
 
@@ -28,7 +28,8 @@ public class AutoService(
     {
         try
         {
-            if (!maintenanceService.IsUnderMaintenance())
+            var isMaintenance = await maintenanceService.IsUnderMaintenanceAsync();
+            if (!isMaintenance)
             {
                 await settlementResultHistoryService.Handle();
                 HandleGarbageCollector();

@@ -1,10 +1,10 @@
-using AutoResultAmendment.Criteria;
-using AutoResultAmendment.Models;
-using AutoResultAmendment.Services;
 using Fanex.Caching;
 using Fanex.Data.Repository;
 using Microsoft.Extensions.Options;
 using NSubstitute;
+using SettlementResultHistory.Criteria;
+using SettlementResultHistory.Models;
+using SettlementResultHistory.Services;
 using Shared;
 
 namespace SettlementResultHistory.UnitTests.Services;

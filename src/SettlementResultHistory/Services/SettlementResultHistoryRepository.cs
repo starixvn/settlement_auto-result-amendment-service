@@ -1,11 +1,10 @@
 ﻿using Fanex.Caching;
-
-namespace AutoResultAmendment.Services;
-
-using Constants;
-using Criteria;
-using Models;
+using SettlementResultHistory.Constants;
+using SettlementResultHistory.Criteria;
+using SettlementResultHistory.Models;
 using Shared;
+
+namespace SettlementResultHistory.Services;
 
 public interface SettlementResultHistoryRepository
 {

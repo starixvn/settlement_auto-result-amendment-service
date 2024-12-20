@@ -1,4 +1,4 @@
-﻿namespace AutoResultAmendment.Models;
+﻿namespace SettlementResultHistory.Models;
 
 public class ResultHistorySettled
 {

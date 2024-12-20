@@ -1,35 +1,21 @@
-﻿using System.Text.Json;
-using Fanex.Data.Repository;
+﻿using Fanex.Data.Repository;
 using Fanex.Settlement.Converter.Services;
 using Microsoft.Extensions.Options;
 using ResultAmendment.Contracts;
 using ResultAmendment.Features.GetMainResource;
-using ResultAmendment.Features.ResultHistoryIns;
 using ResultAmendment.Features.SetResultsStrategy;
 using ResultAmendment.Models;
 using Shared;
+using System.Text.Json;
 
 namespace ResultAmendment.Features.AddSettlementResultHistory;
 
-public class AddSettlementResultHistoryHandler
+public class AddSettlementResultHistoryHandler(
+    IDynamicRepository repository,
+    XmlConvertService xmlConvertService,
+    IGetMainResourceHandler getMainResourceHandler,
+    IOptions<AppSettings> appSettings)
 {
-    private readonly IDynamicRepository repository;
-    private readonly XmlConvertService xmlConvertService;
-    private readonly IGetMainResourceHandler getMainResourceHandler;
-    private readonly IOptions<AppSettings> appSettings;
-
-    public AddSettlementResultHistoryHandler(
-        IDynamicRepository repository,
-        XmlConvertService xmlConvertService,
-        IGetMainResourceHandler getMainResourceHandler,
-        IOptions<AppSettings> appSettings)
-    {
-        this.repository = repository;
-        this.xmlConvertService = xmlConvertService;
-        this.getMainResourceHandler = getMainResourceHandler;
-        this.appSettings = appSettings;
-    }
-
     public async Task HandleAsync(ResultAmended resultAmended)
     {
         var mainResourceIds = await getMainResourceHandler.HandlerAsync(resultAmended.SportType);
@@ -48,7 +34,6 @@ public class AddSettlementResultHistoryHandler
 
             return CreateResultHistoryItem(context);
         }).ToList();
-
 
         if (resultHistoryItems.Count == 0)
         {
@@ -122,7 +107,7 @@ public class AddSettlementResultHistoryHandler
         };
     }
 
-    private List<IGrouping<short, ResultChanged>> GetTicketsGroupByResettleType(string action, List<ResultChanged> results)
+    private static List<IGrouping<short, ResultChanged>> GetTicketsGroupByResettleType(string action, List<ResultChanged> results)
     {
         results.ForEach(x => x.ReSettleType = GetReSettleActionType(x.Action, action));
 

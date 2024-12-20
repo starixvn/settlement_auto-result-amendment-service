@@ -20,7 +20,7 @@ public class TeamXYOrdinalResultStrategy : ISetResultStrategy
             TeamIds = ResultInfoHelpers.GetTeamIds(resultChanged.HomeValue, resourceItem),
             SetX = $"{setX}",
             PointY = $"{pointY}",
-            Ordinal = CreateOrdinal(pointY),
+            Ordinal = $"K{pointY}",
         };
 
         var actualResult = new ResultItem
@@ -32,11 +32,9 @@ public class TeamXYOrdinalResultStrategy : ISetResultStrategy
             TeamIds = ResultInfoHelpers.GetTeamIds(resourceItem.HomeValue, resourceItem),
             SetX = $"{setX}",
             PointY = $"{pointY}",
-            Ordinal = CreateOrdinal(pointY),
+            Ordinal = $"K{pointY}",
         };
 
         return (wrongResult, actualResult);
     }
-
-    private string CreateOrdinal(int pointY) => pointY <= 4 ? $"K{pointY}" : "K4";
 }

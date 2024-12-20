@@ -6,7 +6,6 @@ using NSubstitute.ExceptionExtensions;
 using ResultAmendment.Contracts;
 using ResultAmendment.Features.AddSettlementResultHistory;
 using ResultAmendment.Features.GetMainResource;
-using ResultAmendment.Features.ResultHistoryIns;
 using ResultAmendment.Models;
 using Shared;
 
@@ -17,7 +16,6 @@ public class AddSettlementResultHistoryHandlerTests
     private readonly IDynamicRepository repository;
     private readonly XmlConvertService xmlConvertService;
     private readonly IGetMainResourceHandler mainResourceHandler;
-    private readonly IOptions<AppSettings> appSettingsOptions;
     private readonly AddSettlementResultHistoryHandler addSettlementResultHistoryHandler;
 
     public AddSettlementResultHistoryHandlerTests()
@@ -25,7 +23,7 @@ public class AddSettlementResultHistoryHandlerTests
         repository = Substitute.For<IDynamicRepository>();
         xmlConvertService = Substitute.For<XmlConvertService>();
         mainResourceHandler = Substitute.For<IGetMainResourceHandler>();
-        appSettingsOptions = Substitute.For<IOptions<AppSettings>>();
+        var appSettingsOptions = Substitute.For<IOptions<AppSettings>>();
 
         var appSettings = new AppSettings
         {
@@ -60,9 +58,6 @@ public class AddSettlementResultHistoryHandlerTests
 
         var mainResourceIds = new List<string> { "Q1", "Q2" };
         mainResourceHandler.HandlerAsync(resultAmended.SportType).Returns(mainResourceIds);
-
-        var wrongResult = new ResultItem { ResourceId = "Q1" };
-        var actualResult = new ResultItem { ResourceId = "Q2" };
 
         xmlConvertService.Serialize(Arg.Any<object>()).Returns("SerializedString");
 
@@ -101,7 +96,6 @@ public class AddSettlementResultHistoryHandlerTests
         await repository.DidNotReceive().ExecuteAsync(Arg.Any<AddResultHistoryInsCriteria>());
     }
 
-
     [Fact]
     public async Task HandleAsync_ShouldCatchException_WhenRepositoryThrowsError()
     {
@@ -125,6 +119,4 @@ public class AddSettlementResultHistoryHandlerTests
 
         Assert.NotNull(exception);
     }
-
-
 }

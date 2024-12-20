@@ -1,4 +1,4 @@
-﻿namespace AutoResultAmendment.Constants;
+﻿namespace SettlementResultHistory.Constants;
 
 public static class CacheKeys
 {

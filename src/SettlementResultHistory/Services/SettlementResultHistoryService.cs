@@ -1,11 +1,10 @@
 ﻿using Fanex.Logging;
 using Fanex.MailDeliver.MailClient.Model;
-
-namespace AutoResultAmendment.Services;
-
-using Constants;
-using Models;
+using SettlementResultHistory.Constants;
+using SettlementResultHistory.Models;
 using Shared;
+
+namespace SettlementResultHistory.Services;
 
 public interface SettlementResultHistoryService
 {
@@ -57,7 +56,7 @@ public class SettlementResultHistoryServiceImp(
         }
         catch (Exception ex)
         {
-            await LogService.ErrorAsync($"Fanex.AutoResultAmendmentService: {item.ToString()}", ex);
+            await LogService.ErrorAsync($"Fanex.AutoResultAmendmentService: {item}", ex);
         }
     }
 

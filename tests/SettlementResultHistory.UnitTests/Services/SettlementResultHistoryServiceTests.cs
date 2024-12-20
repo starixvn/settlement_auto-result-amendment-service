@@ -1,8 +1,8 @@
-using AutoResultAmendment.Constants;
-using AutoResultAmendment.Models;
-using AutoResultAmendment.Services;
 using Microsoft.Extensions.Options;
 using NSubstitute;
+using SettlementResultHistory.Constants;
+using SettlementResultHistory.Models;
+using SettlementResultHistory.Services;
 using Shared;
 using MailAppSettings = Fanex.MailDeliver.MailClient.AppSettings;
 

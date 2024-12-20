@@ -1,13 +1,11 @@
 ﻿using ResultAmendment.Features.SetResultsStrategy.Strategies;
 using ResultAmendment.Models;
+
+namespace ResultAmendment.UnitTests.Features.Strategies;
+
 public class TeamXXYYResultStrategyTests
 {
-    private readonly TeamXXYYResultStrategy strategy;
-
-    public TeamXXYYResultStrategyTests()
-    {
-        strategy = new TeamXXYYResultStrategy();
-    }
+    private readonly TeamXXYYResultStrategy strategy = new();
 
     [Fact]
     public void Generate_ShouldReturnCorrectResults_WhenInputsAreValid()

@@ -1,17 +1,12 @@
 ﻿namespace ResultAmendment.UnitTests.Features.Strategies;
 
+using Models;
 using ResultAmendment.Features.SetResultsStrategy.Strategies;
-using ResultAmendment.Models;
 using Xunit;
 
 public class TimeResultStrategyTests
 {
-    private readonly TimeResultStrategy strategy;
-
-    public TimeResultStrategyTests()
-    {
-        strategy = new TimeResultStrategy();
-    }
+    private readonly TimeResultStrategy strategy = new();
 
     [Fact]
     public void Generate_ShouldReturnCorrectResults_WhenInputsAreValid()
@@ -54,5 +49,4 @@ public class TimeResultStrategyTests
         Assert.Equal("5", wrongResult.GroupBetType);
         Assert.Equal("5", actualResult.GroupBetType);
     }
-
 }

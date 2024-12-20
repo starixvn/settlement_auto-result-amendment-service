@@ -1,4 +1,4 @@
-﻿namespace ResultAmendment.Features.ResultHistoryIns;
+﻿namespace ResultAmendment.Features.AddSettlementResultHistory;
 
 public class SettlementResultHistoryItem
 {
