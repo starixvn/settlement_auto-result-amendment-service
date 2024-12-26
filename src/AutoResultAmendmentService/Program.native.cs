@@ -1,7 +1,8 @@
-using AutoResultAmendmentService;
+﻿using AutoResultAmendmentService;
 using Fanex.Data.SqlServer;
 using MassTransit;
 using ResultAmendment;
+using ResultAmendment.Consumers;
 using Shared;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +28,13 @@ builder.Services.AddMassTransit(x =>
             h.Password(builder.Configuration.GetValue("RabbitMQ:Password", "guest"));
         });
 
-        cfg.ConfigureEndpoints(context);
+        cfg.ReceiveEndpoint("result-amended", e =>
+        {
+            e.ConfigureConsumer<ResultAmendedConsumer>(context);
+
+            e.PrefetchCount = 1;
+            e.ConcurrentMessageLimit = 1;
+        });
     });
 
     x.AddResultAmendConsumers();

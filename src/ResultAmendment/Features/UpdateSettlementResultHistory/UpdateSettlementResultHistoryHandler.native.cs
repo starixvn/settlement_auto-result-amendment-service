@@ -17,9 +17,10 @@ public class UpdateSettlementResultHistoryHandler
         this.appSettings = appSettings;
     }
 
-    public async Task HandlerAsync(ResultAmendSettled resultAmendSettled)
+    public async Task HandleAsync(ResultAmendSettled resultAmendSettled)
     {
         var criteria = resultAmendSettled.Adapt<UpdateSettlementResultHistoryCriteria>();
+        //criteria.SessionIds = resultAmended.BroadcastSessionId;
 
         await ExecUpdateSettlementResultHistoryAllSite(criteria);
     }

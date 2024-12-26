@@ -62,13 +62,11 @@ public class SettlementResultHistoryServiceImp(
 
     private async Task HandleTicketSettleDone(ResultHistorySettled item)
     {
-        Console.WriteLine($"HandleTicketSettleDone {DateTime.Now} {item.SessionId}");
         var errorResult = await resultHistoryRepository.CheckResultHistoryError(item);
         var errorSessionIds = errorResult.Select(x => x.SessionId).ToList();
         var errorSessionIdsStr = errorSessionIds.Count > 0 ? string.Join(',', errorSessionIds) : string.Empty;
 
         await resultHistoryRepository.InsResultHistoryTicketDetails(item, errorSessionIdsStr);
-        Console.WriteLine($"InsResultHistoryTicketDetails {DateTime.Now} {item.SessionId}");
         await resultHistoryRepository.UpdateResultHistory(item, ResultHistoryStatus.Success);
 
         if (errorResult.Count > 0)
