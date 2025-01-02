@@ -27,7 +27,7 @@ public class SettlementResultHistoryServiceImp(
 
     private async Task Process(ResultHistorySettled item)
     {
-        Console.WriteLine($"Process {DateTime.Now} {item.SessionId}");
+        await LogService.WarnAsync($"Process ResultHistorySettledItem at {DateTime.Now} {item}");
 
         try
         {
@@ -46,6 +46,7 @@ public class SettlementResultHistoryServiceImp(
 
             if (!item.HasError && (!item.IsCalculated || !item.IsDoneBalNeg))
             {
+
                 await resultHistoryRepository.InsResultHistoryTicketDetails(item, string.Empty);
                 await resultHistoryRepository.UpdateResultHistory(item, ResultHistoryStatus.Failure);
 
@@ -65,7 +66,7 @@ public class SettlementResultHistoryServiceImp(
         var errorResult = await resultHistoryRepository.CheckResultHistoryError(item);
         var errorSessionIds = errorResult.Select(x => x.SessionId).ToList();
         var errorSessionIdsStr = errorSessionIds.Count > 0 ? string.Join(',', errorSessionIds) : string.Empty;
-
+        await LogService.WarnAsync($"Process ResultHistorySettledItem HandleTicketSettleDone at {DateTime.Now} {item} {errorSessionIdsStr}");
         await resultHistoryRepository.InsResultHistoryTicketDetails(item, errorSessionIdsStr);
         await resultHistoryRepository.UpdateResultHistory(item, ResultHistoryStatus.Success);
 
