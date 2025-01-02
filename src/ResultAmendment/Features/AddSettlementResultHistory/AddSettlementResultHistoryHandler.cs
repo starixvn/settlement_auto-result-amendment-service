@@ -1,4 +1,5 @@
-﻿using Fanex.Data.Repository;
+﻿using System.Text.Json;
+using Fanex.Data.Repository;
 using Fanex.Settlement.Converter.Services;
 using Microsoft.Extensions.Options;
 using ResultAmendment.Contracts;
@@ -6,7 +7,6 @@ using ResultAmendment.Features.GetMainResource;
 using ResultAmendment.Features.SetResultsStrategy;
 using ResultAmendment.Models;
 using Shared;
-using System.Text.Json;
 
 namespace ResultAmendment.Features.AddSettlementResultHistory;
 
@@ -18,6 +18,7 @@ public class AddSettlementResultHistoryHandler(
 {
     public async Task HandleAsync(ResultAmended resultAmended)
     {
+        await Task.Delay(TimeSpan.FromSeconds(5));
         var mainResourceIds = await getMainResourceHandler.HandlerAsync(resultAmended.SportType);
 
         var groupedResults = GetTicketsGroupByResettleType(resultAmended.Action, resultAmended.ResultsChanged);
