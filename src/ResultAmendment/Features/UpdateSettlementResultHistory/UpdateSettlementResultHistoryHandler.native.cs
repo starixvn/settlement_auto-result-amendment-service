@@ -20,7 +20,7 @@ public class UpdateSettlementResultHistoryHandler
     public async Task HandleAsync(ResultAmendSettled resultAmendSettled)
     {
         var criteria = resultAmendSettled.Adapt<UpdateSettlementResultHistoryCriteria>();
-        //criteria.SessionIds = resultAmended.BroadcastSessionId;
+        criteria.StatusId = resultAmendSettled.IsOrg ? (short)1 : (short)0;
 
         await ExecUpdateSettlementResultHistoryAllSite(criteria);
     }
