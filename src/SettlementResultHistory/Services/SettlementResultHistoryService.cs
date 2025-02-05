@@ -27,8 +27,9 @@ public class SettlementResultHistoryServiceImp(
 
     private async Task Process(ResultHistorySettled item)
     {
-        await LogService.WarnAsync($"Process ResultHistorySettledItem at {DateTime.Now} {item}");
+        Console.WriteLine($"Process ResultHistorySettledItem at {DateTime.Now} {item}");
 
+        LogService.Warn($"Process ResultHistorySettledItem at {DateTime.Now} {item}");
         try
         {
             if (item.HasError)

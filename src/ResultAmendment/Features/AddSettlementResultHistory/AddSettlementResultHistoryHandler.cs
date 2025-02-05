@@ -18,7 +18,6 @@ public class AddSettlementResultHistoryHandler(
 {
     public async Task HandleAsync(ResultAmended resultAmended)
     {
-        await Task.Delay(TimeSpan.FromSeconds(5));
         var mainResourceIds = await getMainResourceHandler.HandlerAsync(resultAmended.SportType);
 
         var groupedResults = GetTicketsGroupByResettleType(resultAmended.Action, resultAmended.ResultsChanged);
