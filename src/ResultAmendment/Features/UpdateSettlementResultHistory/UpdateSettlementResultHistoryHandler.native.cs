@@ -23,8 +23,6 @@ public class UpdateSettlementResultHistoryHandler
         criteria.StatusId = resultAmendSettled.IsOrg ? (short)1 : (short)0;
 
         await ExecUpdateSettlementResultHistoryAllSite(criteria);
-        Console.WriteLine($"UpdateResultHistory {criteria.MatchId} {criteria.StatusId} {criteria.SessionIds} {criteria.StatusId}");
-
     }
 
     private async Task ExecUpdateSettlementResultHistoryAllSite(UpdateSettlementResultHistoryCriteria criteria)

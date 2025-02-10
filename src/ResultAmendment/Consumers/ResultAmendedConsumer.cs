@@ -22,18 +22,14 @@ public sealed class ResultAmendedConsumer : IConsumer<ResultAmended>, IConsumer<
     public async Task Consume(ConsumeContext<ResultAmended> context)
     {
         await LogService.InfoAsync($"ResultAmendedConsumer Start {DateTime.Now} {context.Message.MatchId} {context.Message.BroadcastSessionId}", context.Message);
-        Console.WriteLine($"ResultAmendedConsumer Start {DateTime.Now} {context.Message.MatchId} {context.Message.BroadcastSessionId}");
         await addHandler.HandleAsync(context.Message);
         await LogService.InfoAsync($"ResultAmendedConsumer Done {DateTime.Now} {context.Message.MatchId} {context.Message.BroadcastSessionId}", context.Message);
-        Console.WriteLine($"ResultAmendedConsumer Done {DateTime.Now} {context.Message.MatchId} {context.Message.BroadcastSessionId}", context.Message);
     }
 
     public async Task Consume(ConsumeContext<ResultAmendSettled> context)
     {
         await LogService.InfoAsync($"ResultAmendSettled Start {DateTime.Now} {context.Message.MatchId} {context.Message.SessionIds}", context.Message);
-        Console.WriteLine($"ResultAmendSettled Start {DateTime.Now} {context.Message.MatchId} {context.Message.SessionIds}");
         await updateHandler.HandleAsync(context.Message);
         await LogService.InfoAsync($"ResultAmendSettled Done {DateTime.Now} {context.Message.MatchId} {context.Message.SessionIds}", context.Message);
-        Console.WriteLine($"ResultAmendSettled Done {DateTime.Now} {context.Message.MatchId} {context.Message.SessionIds}");
     }
 }

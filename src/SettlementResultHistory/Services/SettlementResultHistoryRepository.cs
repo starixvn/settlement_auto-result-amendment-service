@@ -29,7 +29,6 @@ public class SettlementResultHistoryRepositoryImp(
     {
         var leagueIds = await GetLeagueIdsTest();
         var result = await GetResultHistory();
-        Console.WriteLine($"GetResultHistory {result.Count}");
         var orderedResult = result.OrderBy(x => x.CreatedDate).ToList();
 
 
@@ -46,9 +45,6 @@ public class SettlementResultHistoryRepositoryImp(
         var result = new List<int>();
         var (_, leagueId) = await cache.TryGetAsync<int>(CacheKeys.LeagueIdForTest);
         var (_, leagueIdsStr) = await cache.TryGetAsync<string>(CacheKeys.LeagueIdsTest);
-
-        Console.WriteLine($"GetResultHistoryByEnv {leagueId}");
-        Console.WriteLine($"GetResultHistoryByEnv {leagueIdsStr}");
 
         var item = (leagueIdsStr ?? string.Empty).Split(',').Select(x => int.TryParse(x, out int value) ? value : 0).ToList();
 
@@ -68,7 +64,6 @@ public class SettlementResultHistoryRepositoryImp(
             DbServer = item.DbServer
         };
         await dynamicRepository.ExecuteAsync(criteria);
-        Console.WriteLine($"UpdateResultHistory {item} {statusId}");
     }
 
     public async Task InsResultHistoryTicketDetails(ResultHistorySettled item, string errorSessionIds)
