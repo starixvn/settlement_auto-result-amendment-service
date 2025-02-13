@@ -1,0 +1,12 @@
+﻿using Fanex.Data.Repository;
+
+namespace ResultAmendment.Features.GetMainResource;
+
+public class GetMainResourceCriteria(int sportType) : CriteriaBase
+{
+    public int SportType { get; set; } = sportType;
+
+    public override string GetSettingKey() => "NAP_Admin_MajorRound_Sel";
+
+    public override bool IsValid() => SportType > 0;
+}
