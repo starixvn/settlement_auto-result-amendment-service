@@ -1,6 +1,6 @@
 ﻿namespace ResultAmendment.UnitTests.Features.Strategies;
 
-using Models;
+using Fanex.Settlement.MessageBridge.ResultAmendment;
 using ResultAmendment.Features.SetResultsStrategy.Strategies;
 using Xunit;
 

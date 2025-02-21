@@ -1,12 +1,11 @@
 ﻿using Fanex.Data.Repository;
 using Fanex.Settlement.Converter.Services;
+using Fanex.Settlement.MessageBridge.ResultAmendment;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
-using ResultAmendment.Contracts;
 using ResultAmendment.Features.AddSettlementResultHistory;
 using ResultAmendment.Features.GetMainResource;
-using ResultAmendment.Models;
 using Shared;
 
 namespace ResultAmendment.UnitTests.Features;

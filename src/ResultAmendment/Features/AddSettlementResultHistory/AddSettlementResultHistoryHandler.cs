@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using Fanex.Data.Repository;
 using Fanex.Settlement.Converter.Services;
+using Fanex.Settlement.MessageBridge.ResultAmendment;
 using Microsoft.Extensions.Options;
-using ResultAmendment.Contracts;
 using ResultAmendment.Features.GetMainResource;
 using ResultAmendment.Features.SetResultsStrategy;
 using ResultAmendment.Models;

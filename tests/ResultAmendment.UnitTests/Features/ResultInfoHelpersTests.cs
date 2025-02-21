@@ -1,5 +1,5 @@
-﻿using ResultAmendment.Features.SetResultsStrategy;
-using ResultAmendment.Models;
+﻿using Fanex.Settlement.MessageBridge.ResultAmendment;
+using ResultAmendment.Features.SetResultsStrategy;
 namespace ResultAmendment.UnitTests.Features;
 
 

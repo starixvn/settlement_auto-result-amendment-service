@@ -1,7 +1,7 @@
 ﻿using Fanex.Data.Repository;
+using Fanex.Settlement.MessageBridge.ResultAmendment;
 using Mapster;
 using Microsoft.Extensions.Options;
-using ResultAmendment.Contracts;
 using Shared;
 
 namespace ResultAmendment.Features.UpdateSettlementResultHistory;

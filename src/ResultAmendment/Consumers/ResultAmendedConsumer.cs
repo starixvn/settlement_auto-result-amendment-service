@@ -1,6 +1,6 @@
 ﻿using Fanex.Logging;
+using Fanex.Settlement.MessageBridge.ResultAmendment;
 using MassTransit;
-using ResultAmendment.Contracts;
 using ResultAmendment.Features.AddSettlementResultHistory;
 using ResultAmendment.Features.UpdateSettlementResultHistory;
 
