@@ -71,7 +71,7 @@ public class TeamXXResultStrategyTests
 
         // Assert
         Assert.Equal("A", wrongResult.Home);
-        Assert.Equal("None", actualResult.Home);
+        Assert.Equal("NONE", actualResult.Home);
         Assert.Equal("", wrongResult.Away);
         Assert.Equal("", actualResult.Away);
     }

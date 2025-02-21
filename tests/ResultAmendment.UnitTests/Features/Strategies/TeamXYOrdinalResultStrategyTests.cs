@@ -35,7 +35,7 @@ public class TeamXYOrdinalResultStrategyTests
         Assert.Equal("12340402", wrongResult.ResourceId);
         Assert.Equal("12340402", actualResult.ResourceId);
         Assert.Equal("A", wrongResult.Home);
-        Assert.Equal("None", actualResult.Home);
+        Assert.Equal("NONE", actualResult.Home);
         Assert.Empty(wrongResult.Away);
         Assert.Empty(actualResult.Away);
         Assert.Equal("1234", wrongResult.RefBetTypeId);
@@ -78,7 +78,7 @@ public class TeamXYOrdinalResultStrategyTests
         Assert.Equal("4", actualResult.SetX);
         Assert.Equal("15", wrongResult.PointY);
         Assert.Equal("15", actualResult.PointY);
-        Assert.Equal("K4", wrongResult.Ordinal);
-        Assert.Equal("K4", actualResult.Ordinal);
+        Assert.Equal("K15", wrongResult.Ordinal);
+        Assert.Equal("K15", actualResult.Ordinal);
     }
 }

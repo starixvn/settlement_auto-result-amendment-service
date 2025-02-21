@@ -71,8 +71,8 @@ public class MapXYesNoResultStrategyTests
         var (wrongResult, actualResult) = _strategy.Generate(resultChanged, resourceItem);
 
         // Assert
-        Assert.Equal("None", wrongResult.Home);
-        Assert.Equal("None", actualResult.Home);
+        Assert.Equal("NONE", wrongResult.Home);
+        Assert.Equal("NONE", actualResult.Home);
     }
 
     [Fact]

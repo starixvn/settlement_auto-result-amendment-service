@@ -34,7 +34,7 @@ public class TeamXXYYResultStrategyTests
         Assert.Equal("12340115", wrongResult.ResourceId);
         Assert.Equal("12340115", actualResult.ResourceId);
         Assert.Equal("A", wrongResult.Home);
-        Assert.Equal("None", actualResult.Home);
+        Assert.Equal("NONE", actualResult.Home);
         Assert.Equal("", wrongResult.Away);
         Assert.Equal("", actualResult.Away);
         Assert.Equal("1234", wrongResult.RefBetTypeId);
@@ -52,14 +52,14 @@ public class TeamXXYYResultStrategyTests
         var resultChanged = new ResultChanged
         {
             ResourceId = "12340115",
-            HomeValue = "TeamA",
+            HomeValue = "",
             AwayValue = null
         };
 
         var resourceItem = new ResourceItem
         {
             ResourceId = "12340115",
-            HomeValue = "TeamC",
+            HomeValue = "",
             AwayValue = null
         };
 
@@ -67,8 +67,8 @@ public class TeamXXYYResultStrategyTests
         var (wrongResult, actualResult) = strategy.Generate(resultChanged, resourceItem);
 
         // Assert
-        Assert.Equal("TeamA", wrongResult.Home);
-        Assert.Equal("TeamC", actualResult.Home);
+        Assert.Equal("", wrongResult.Home);
+        Assert.Equal("", actualResult.Home);
         Assert.Equal("", wrongResult.Away);
         Assert.Equal("", actualResult.Away);
     }

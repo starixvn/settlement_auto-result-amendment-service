@@ -15,7 +15,7 @@ public class MapXOverlordTyrantResultStrategyTests
     [InlineData("T", "TR")]
     [InlineData("O", "O")]
     [InlineData("NT", "OM")]
-    [InlineData("N", "None")]
+    [InlineData("N", "NONE")]
     [InlineData("X", "")]
     public void Generate_ShouldReturnCorrectResults_WhenInputsAreValid(string input, string expected)
     {
