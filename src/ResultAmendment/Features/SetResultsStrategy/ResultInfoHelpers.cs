@@ -1,4 +1,4 @@
-﻿using ResultAmendment.Models;
+﻿using Fanex.Settlement.MessageBridge.ResultAmendment;
 
 namespace ResultAmendment.Features.SetResultsStrategy;
 

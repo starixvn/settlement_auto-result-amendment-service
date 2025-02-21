@@ -1,5 +1,5 @@
-﻿using ResultAmendment.Features.SetResultsStrategy.Strategies;
-using ResultAmendment.Models;
+﻿using Fanex.Settlement.MessageBridge.ResultAmendment;
+using ResultAmendment.Features.SetResultsStrategy.Strategies;
 
 namespace ResultAmendment.UnitTests.Features.Strategies;
 public class MapXOverlordTyrantResultStrategyTests
