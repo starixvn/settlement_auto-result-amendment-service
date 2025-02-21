@@ -17,7 +17,7 @@ public static class Injector
         services.AddSingleton<SettlementResultHistoryService, SettlementResultHistoryServiceImp>();
         services.AddSingleton<SettlementResultHistoryRepository, SettlementResultHistoryRepositoryImp>();
         services.AddSingleton<XmlConvertService, XmlConvertServiceImp>();
-        services.AddOneBookUm(configuration);
+        services.AddOneBookUmForService(configuration);
         services.AddFanexLogSentry(configuration);
 
         ConfigureRedis(services, configuration);

@@ -8,16 +8,15 @@
     <Compile Remove="Services\PoolService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fanex.Caching" Version="2.2.7" />
-    <PackageReference Include="Fanex.Caching.Redis" Version="2.2.7" />
-    <PackageReference Include="Fanex.Data.Repository" Version="4.3.2" />
+    <PackageReference Include="Fanex.Caching" Version="2.2.8" />
+    <PackageReference Include="Fanex.Caching.Redis" Version="2.2.8" />
+    <PackageReference Include="Fanex.Data.Repository" Version="4.3.2.1" />
     <!-- ReSharper disable once VulnerablePackage -->
-    <PackageReference Include="Fanex.Data.SqlServer" Version="4.3.2" />
+    <PackageReference Include="Fanex.Data.SqlServer" Version="4.3.2.1" />
     <PackageReference Include="Fanex.Logging" Version="2.0.2" />
     <PackageReference Include="Fanex.MailDeliver.MailClient" Version="2.1.0" />
     <PackageReference Include="Fanex.Settlement.Converter" Version="1.0.0.1" />
-    <PackageReference Include="Fanex.Settlement.ScaleOut" Version="1.4.6.1" />
-    <PackageReference Include="ONEbook.UM" Version="3.1.8" />
+    <PackageReference Include="ONEbook.UM" Version="3.2.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
