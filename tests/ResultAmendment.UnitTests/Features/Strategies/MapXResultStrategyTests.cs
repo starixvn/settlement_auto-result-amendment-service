@@ -2,6 +2,7 @@
 using ResultAmendment.Features.SetResultsStrategy.Strategies;
 
 namespace ResultAmendment.UnitTests.Features.Strategies;
+
 public class MapXResultStrategyTests
 {
     private readonly MapXResultStrategy strategy;
@@ -56,14 +57,13 @@ public class MapXResultStrategyTests
         {
             ResourceId = "XYZ99",
             HomeValue = "3.0",
-            AwayValue = null
+            AwayValue = string.Empty
         };
 
         var resourceItem = new ResourceItem
         {
             ResourceId = "XYZ99",
             HomeValue = "3.1",
-            AwayValue = null
         };
 
         // Act

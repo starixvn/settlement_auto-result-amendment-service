@@ -14,6 +14,13 @@
     <ProjectReference Include="..\SettlementResultHistory\SettlementResultHistory.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Content Update="appsettings.KLDR.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <None Update="App_Data\SpName.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

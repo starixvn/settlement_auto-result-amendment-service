@@ -31,7 +31,6 @@ public class SettlementResultHistoryRepositoryImp(
         var result = await GetResultHistory();
         var orderedResult = result.OrderBy(x => x.CreatedDate).ToList();
 
-
         return appSettings.Value.EnvironmentName switch
         {
             "PRO" => leagueIds.Count > 0 ? orderedResult.Where(x => !leagueIds.Contains(x.LeagueId ?? 0)).ToList() : orderedResult.ToList(),
@@ -46,7 +45,7 @@ public class SettlementResultHistoryRepositoryImp(
         var (_, leagueId) = await cache.TryGetAsync<int>(CacheKeys.LeagueIdForTest);
         var (_, leagueIdsStr) = await cache.TryGetAsync<string>(CacheKeys.LeagueIdsTest);
 
-        var item = (leagueIdsStr ?? string.Empty).Split(',').Select(x => int.TryParse(x, out int value) ? value : 0).ToList();
+        var item = (leagueIdsStr ?? string.Empty).Split(',').Select(x => int.TryParse(x, out var value) ? value : 0).ToList();
 
         result.Add(leagueId);
         result.AddRange(item);

@@ -56,14 +56,12 @@ public class TeamXYOrdinalResultStrategyTests
         {
             ResourceId = "12340415",
             HomeValue = "",
-            AwayValue = null
         };
 
         var resourceItem = new ResourceItem
         {
             ResourceId = "12340415",
             HomeValue = "",
-            AwayValue = null
         };
 
         // Act

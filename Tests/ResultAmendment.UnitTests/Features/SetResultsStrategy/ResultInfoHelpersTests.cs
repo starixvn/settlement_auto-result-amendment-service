@@ -1,6 +1,6 @@
 ﻿using Fanex.Settlement.MessageBridge.ResultAmendment;
 using ResultAmendment.Features.SetResultsStrategy;
-namespace ResultAmendment.UnitTests.Features;
+namespace ResultAmendment.UnitTests.Features.SetResultsStrategy;
 
 
 public class ResultInfoHelpersTests

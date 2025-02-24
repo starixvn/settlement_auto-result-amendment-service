@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System.Globalization;
+using System.Xml.Serialization;
 
 namespace ResultAmendment.Models;
 
@@ -8,7 +9,6 @@ public class ResultInfo
     [XmlElement("r")]
     public List<ResultItem> ResultItems { get; set; }
 }
-
 
 public class ResultItem
 {
@@ -22,14 +22,14 @@ public class ResultItem
     public string Home
     {
         get => home;
-        set => home = (value ?? string.Empty).ToUpper();
+        set => home = (value ?? string.Empty).ToUpper(CultureInfo.InvariantCulture);
     }
 
     [XmlAttribute("Away")]
     public string Away
     {
         get => away;
-        set => away = (value ?? string.Empty).ToUpper();
+        set => away = (value ?? string.Empty).ToUpper(CultureInfo.InvariantCulture);
     }
 
     [XmlAttribute("RefBettypeID")]

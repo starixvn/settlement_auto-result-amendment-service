@@ -6,17 +6,8 @@ using Shared;
 
 namespace ResultAmendment.Features.UpdateSettlementResultHistory;
 
-public class UpdateSettlementResultHistoryHandler
+public class UpdateSettlementResultHistoryHandler(IDynamicRepository repository, IOptions<AppSettings> appSettings)
 {
-    private readonly IDynamicRepository repository;
-    private readonly IOptions<AppSettings> appSettings;
-
-    public UpdateSettlementResultHistoryHandler(IDynamicRepository repository, IOptions<AppSettings> appSettings)
-    {
-        this.repository = repository;
-        this.appSettings = appSettings;
-    }
-
     public async Task HandleAsync(ResultAmendSettled resultAmendSettled)
     {
         var criteria = resultAmendSettled.Adapt<UpdateSettlementResultHistoryCriteria>();

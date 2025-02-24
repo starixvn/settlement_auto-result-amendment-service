@@ -53,14 +53,14 @@ public class TeamXXYYResultStrategyTests
         {
             ResourceId = "12340115",
             HomeValue = "",
-            AwayValue = null
+            AwayValue = string.Empty
         };
 
         var resourceItem = new ResourceItem
         {
             ResourceId = "12340115",
             HomeValue = "",
-            AwayValue = null
+            AwayValue = string.Empty
         };
 
         // Act

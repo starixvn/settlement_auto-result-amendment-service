@@ -2,6 +2,7 @@
 using ResultAmendment.Features.SetResultsStrategy.Strategies;
 
 namespace ResultAmendment.UnitTests.Features.Strategies;
+
 public class TeamXXResultStrategyTests
 {
     private readonly TeamXXResultStrategy _strategy;
@@ -56,14 +57,12 @@ public class TeamXXResultStrategyTests
         {
             ResourceId = "1234502",
             HomeValue = "A",
-            AwayValue = null
         };
 
         var resourceItem = new ResourceItem
         {
             ResourceId = "1234502",
             HomeValue = "N",
-            AwayValue = null
         };
 
         // Act

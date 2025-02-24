@@ -14,7 +14,7 @@ public class TeamXXResultStrategy : ISetResultStrategy
         {
             ResourceId = resourceId,
             Home = ResultInfoHelpers.NormalizeHomeValue(resultChanged.HomeValue),
-            Away = resultChanged.AwayValue ?? "",
+            Away = resultChanged.AwayValue,
             RefBetTypeId = betTypeId,
             TeamIds = ResultInfoHelpers.GetTeamIds(resultChanged.HomeValue, resourceItem),
             SetX = $"{setX}",
@@ -24,7 +24,7 @@ public class TeamXXResultStrategy : ISetResultStrategy
         {
             ResourceId = resourceId,
             Home = ResultInfoHelpers.NormalizeHomeValue(resourceItem.HomeValue),
-            Away = resourceItem.AwayValue ?? "",
+            Away = resourceItem.AwayValue,
             RefBetTypeId = betTypeId,
             TeamIds = ResultInfoHelpers.GetTeamIds(resourceItem.HomeValue, resourceItem),
             SetX = $"{setX}",

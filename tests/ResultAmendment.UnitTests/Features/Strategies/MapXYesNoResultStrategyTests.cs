@@ -82,14 +82,12 @@ public class MapXYesNoResultStrategyTests
         var resultChanged = new ResultChanged
         {
             ResourceId = "XYZ99",
-            HomeValue = null,
             AwayValue = "Y"
         };
 
         var resourceItem = new ResourceItem
         {
             ResourceId = "XYZ99",
-            HomeValue = null,
             AwayValue = "N"
         };
 
@@ -100,5 +98,4 @@ public class MapXYesNoResultStrategyTests
         Assert.Equal(string.Empty, wrongResult.Home);
         Assert.Equal(string.Empty, actualResult.Home);
     }
-
 }

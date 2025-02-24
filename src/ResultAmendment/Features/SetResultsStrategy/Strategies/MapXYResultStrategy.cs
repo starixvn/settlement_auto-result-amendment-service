@@ -14,8 +14,8 @@ public class MapXYResultStrategy : ISetResultStrategy // Es : E4
         var wrongResult = new ResultItem
         {
             ResourceId = resourceId,
-            Home = resultChanged.HomeValue ?? "",
-            Away = resultChanged.AwayValue ?? "",
+            Home = resultChanged.HomeValue,
+            Away = resultChanged.AwayValue,
             RefBetTypeId = betTypeId,
             SetX = $"{setX}",
             PointY = $"{pointY}",
@@ -24,8 +24,8 @@ public class MapXYResultStrategy : ISetResultStrategy // Es : E4
         var actualResult = new ResultItem
         {
             ResourceId = resourceId,
-            Home = resourceItem.HomeValue ?? "",
-            Away = resourceItem.AwayValue ?? "",
+            Home = resourceItem.HomeValue,
+            Away = resourceItem.AwayValue,
             RefBetTypeId = betTypeId,
             SetX = $"{setX}",
             PointY = $"{pointY}",

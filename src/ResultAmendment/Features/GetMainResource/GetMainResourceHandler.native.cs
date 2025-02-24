@@ -8,17 +8,8 @@ public interface IGetMainResourceHandler
     Task<List<string>> HandlerAsync(int sportType);
 }
 
-public class GetMainResourceHandler : IGetMainResourceHandler
+public class GetMainResourceHandler(IDynamicRepository repository, IMemoryCache memoryCache) : IGetMainResourceHandler
 {
-    private readonly IDynamicRepository repository;
-    private readonly IMemoryCache memoryCache;
-
-    public GetMainResourceHandler(IDynamicRepository repository, IMemoryCache memoryCache)
-    {
-        this.repository = repository;
-        this.memoryCache = memoryCache;
-    }
-
     public async Task<List<string>> HandlerAsync(int sportType)
     {
         var cachedValue = await memoryCache.GetOrCreateAsync(

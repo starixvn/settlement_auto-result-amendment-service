@@ -14,7 +14,7 @@ public class MapXLaneResultStrategy : ISetResultStrategy
         {
             ResourceId = resourceId,
             Home = NormalizeLaneValue(resultChanged.HomeValue),
-            Away = resultChanged.AwayValue ?? "",
+            Away = resultChanged.AwayValue,
             RefBetTypeId = betTypeId,
             SetX = $"{mapX}",
         };
@@ -23,7 +23,7 @@ public class MapXLaneResultStrategy : ISetResultStrategy
         {
             ResourceId = resourceId,
             Home = NormalizeLaneValue(resourceItem.HomeValue),
-            Away = resourceItem.AwayValue ?? "",
+            Away = resourceItem.AwayValue,
             RefBetTypeId = betTypeId,
             SetX = $"{mapX}",
         };
