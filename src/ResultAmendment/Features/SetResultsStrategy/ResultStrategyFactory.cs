@@ -46,7 +46,7 @@ public static class ResultStrategyFactory
 
     private static bool IsTeamResult(string resourceId)
     {
-        return resourceId is "604" or "605";
+        return resourceId is "604" or "605" or "3901";
     }
 
     private static ISetResultStrategy GetLengthSixStrategy(string resourceId, int groupBetType)
@@ -94,6 +94,12 @@ public static class ResultStrategyFactory
         {
             // GroupBetType 6, 7, 8, 9, 10
             return new TeamXYOrdinalResultStrategy();
+        }
+
+        if (resourceId.StartsWith("3903"))
+        {
+            // For Set X Race To Y Points
+            return new SetRacePointStrategy();
         }
 
         if (GroupBetTypes.Team.Contains(groupBetType))

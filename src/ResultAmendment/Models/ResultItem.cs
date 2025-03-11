@@ -15,6 +15,36 @@ public class ResultItem
     private string home;
     private string away;
 
+    public ResultItem()
+    {
+    }
+
+    public ResultItem(
+        string resourceId,
+        string home,
+        string away,
+        string refBetTypeId,
+        string setX = null,
+        string pointY = null,
+        string teamIds = null,
+        string otherInfo = null,
+        string ordinal = null,
+        string groupBetType = null)
+    {
+        Home = home;
+        Away = away;
+        ResourceId = resourceId;
+        Home = home;
+        Away = away;
+        RefBetTypeId = refBetTypeId;
+        SetX = setX;
+        PointY = pointY;
+        TeamIds = teamIds;
+        OtherInfo = otherInfo;
+        Ordinal = ordinal;
+        GroupBetType = groupBetType;
+    }
+
     [XmlAttribute("Id")]
     public string ResourceId { get; set; }
 
