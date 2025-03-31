@@ -1,4 +1,6 @@
-﻿namespace SettlementResultHistory.Models;
+﻿using System.Text.Json;
+
+namespace SettlementResultHistory.Models;
 
 public class ResultHistorySettled
 {
@@ -25,6 +27,5 @@ public class ResultHistorySettled
 
     public override int GetHashCode() => SessionId.GetHashCode() ^ DbServer.GetHashCode();
 
-    public override string ToString() =>
-        $"MatchId: {MatchId}, LeagueId: {LeagueId}, SessionId: {SessionId}, SportType: {SportType}, ActionType: {ActionType}, ActualResult: {ActualResult}, ExtraInfo: {ExtraInfo}, StatusId: {StatusId}, CreatedDate: {CreatedDate}, IsCalculated: {IsCalculated}, IsDoneBalNeg: {IsDoneBalNeg}, HasError: {HasError}, DbServer: {DbServer}";
+    public override string ToString() => JsonSerializer.Serialize(this);
 }

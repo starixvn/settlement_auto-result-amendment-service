@@ -48,7 +48,7 @@ public class SetRacePointStrategy : ISetResultStrategy
             return "H";
         }
 
-        if (homeScore >= point && homeScore < awayScore)
+        if (awayScore >= point && homeScore < awayScore)
         {
             return "A";
         }
