@@ -102,6 +102,11 @@ public static class ResultStrategyFactory
             return new SetRacePointStrategy();
         }
 
+        if (resourceId.StartsWith("3915"))
+        {
+            return new SetPointPlayedStrategy();
+        }
+
         if (GroupBetTypes.Team.Contains(groupBetType))
         {
             //e3, e5  GroupBetType 0, 1, 2
