@@ -40,8 +40,13 @@ public class SetRacePointStrategy : ISetResultStrategy
 
     private static string GetHomeValue(string homeValue, string awayValue, int point)
     {
-        int homeScore = Convert.ToInt16(homeValue);
-        int awayScore = Convert.ToInt16(awayValue);
+        var isHomeScore = int.TryParse(homeValue, out var homeScore);
+        var isAwayScore = int.TryParse(awayValue, out var awayScore);
+
+        if (!isHomeScore || !isAwayScore)
+        {
+            return homeValue;
+        }
 
         if (homeScore >= point && homeScore > awayScore)
         {
