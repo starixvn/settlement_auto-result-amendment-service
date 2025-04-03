@@ -15,6 +15,10 @@ public class ResultItem
     private string home;
     private string away;
 
+    public ResultItem()
+    {
+    }
+
     [XmlAttribute("Id")]
     public string ResourceId { get; set; }
 
