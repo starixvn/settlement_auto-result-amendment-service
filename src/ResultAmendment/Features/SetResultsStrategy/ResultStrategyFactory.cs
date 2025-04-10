@@ -36,7 +36,7 @@ public static class ResultStrategyFactory
 
     private static bool IsTeamXXYYResult(string resourceId)
     {
-        return resourceId.StartsWith("613");
+        return resourceId.StartsWith("613") || resourceId.StartsWith("712") || resourceId.StartsWith("713");
     }
 
     private static bool IsTeamXXResult(string resourceId)
