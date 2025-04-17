@@ -8,4 +8,6 @@ public class CreateResultHistoryItemContext
     public short ActionType { get; set; }
     public int SequenceNumber { get; set; }
     public List<string> MainResourceIds { get; set; }
+
+    public string Type { get; set; }
 }

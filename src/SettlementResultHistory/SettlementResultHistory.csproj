@@ -16,6 +16,7 @@
     <PackageReference Include="Fanex.MailDeliver.MailClient" Version="2.1.0" />
     <PackageReference Include="Fanex.Settlement.Converter" Version="1.0.0.1" />
     <PackageReference Include="ONEbook.UM" Version="3.2.4" />
+     <PackageReference Include="Fanex.Settlement.MessageBridge" Version="1.0.4-alpha06" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />

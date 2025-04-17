@@ -8,6 +8,9 @@ public class ResultInfo
 {
     [XmlElement("r")]
     public List<ResultItem> ResultItems { get; set; }
+
+    [XmlAttribute("type")]
+    public string Type { get; set; }
 }
 
 public class ResultItem
@@ -31,6 +34,9 @@ public class ResultItem
         get => away;
         set => away = (value ?? string.Empty).ToUpper(CultureInfo.InvariantCulture);
     }
+
+    [XmlElement("p")]
+    public List<PositionResult> Positions { get; set; } = [];
 
     [XmlAttribute("RefBettypeID")]
     public string RefBetTypeId { get; set; }

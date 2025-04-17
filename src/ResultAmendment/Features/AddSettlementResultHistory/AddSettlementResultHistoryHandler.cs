@@ -1,12 +1,12 @@
-﻿using System.Text.Json;
-using Fanex.Data.Repository;
+﻿using Fanex.Data.Repository;
 using Fanex.Settlement.Converter.Services;
+using Fanex.Settlement.MessageBridge.Constants;
 using Fanex.Settlement.MessageBridge.ResultAmendment;
 using Microsoft.Extensions.Options;
 using ResultAmendment.Features.GetMainResource;
-using ResultAmendment.Features.SetResultsStrategy;
 using ResultAmendment.Models;
 using Shared;
+using System.Text.Json;
 
 namespace ResultAmendment.Features.AddSettlementResultHistory;
 
@@ -14,6 +14,7 @@ public class AddSettlementResultHistoryHandler(
     IDynamicRepository repository,
     XmlConvertService xmlConvertService,
     IGetMainResourceHandler getMainResourceHandler,
+    IGenerateResultService generateResultService,
     IOptions<AppSettings> appSettings)
 {
     public async Task HandleAsync(ResultAmended resultAmended)
@@ -29,7 +30,8 @@ public class AddSettlementResultHistoryHandler(
                 SelectedResources = resultAmended.SelectedResources,
                 ActionType = group.Key,
                 SequenceNumber = index + 1,
-                MainResourceIds = mainResourceIds
+                MainResourceIds = mainResourceIds,
+                Type = resultAmended.Type
             };
 
             return CreateResultHistoryItem(context);
@@ -64,35 +66,10 @@ public class AddSettlementResultHistoryHandler(
         await repository.ExecuteAsync(criteria);
     }
 
-    private (List<ResultItem> WrongResults, List<ResultItem> ActualResults) GenerateWrongAndActualResults(
-        List<ResultChanged> resultsChanged,
-        List<ResourceItem> selectedResources,
-        List<string> mainResourceIds)
-    {
-        var wrongResults = new List<ResultItem>();
-        var actualResults = new List<ResultItem>();
-
-        foreach (var item in selectedResources)
-        {
-            var resultChanged = resultsChanged.Find(x => x.ResourceId == item.ResourceId);
-            if (resultChanged == null)
-            {
-                continue;
-            }
-
-            var strategy = ResultStrategyFactory.GetStrategy(item.ResourceId, item.GroupBetType, mainResourceIds);
-            var (wrongResult, actualResult) = strategy.Generate(resultChanged, item);
-
-            wrongResults.Add(wrongResult);
-            actualResults.Add(actualResult);
-        }
-
-        return (wrongResults, actualResults);
-    }
-
     private SettlementResultHistoryItem CreateResultHistoryItem(CreateResultHistoryItemContext context)
     {
-        var (wrongResults, actualResults) = GenerateWrongAndActualResults(
+        var (wrongResults, actualResults) = context.Type == ResultAmendmentType.FastMarket ?
+        generateResultService.GenerateFastMarketResult(context.ResultsChanged, context.SelectedResources) : generateResultService.GenerateWrongAndActualResults(
             context.ResultsChanged,
             context.SelectedResources,
             context.MainResourceIds);
@@ -100,9 +77,9 @@ public class AddSettlementResultHistoryHandler(
         return new SettlementResultHistoryItem
         {
             SeqNo = context.SequenceNumber,
-            WrongResult = xmlConvertService.Serialize(new ResultInfo { ResultItems = wrongResults }),
-            ActualResult = xmlConvertService.Serialize(new ResultInfo { ResultItems = actualResults }),
-            ExtraInfo = GenerateExtraInfo(context.SelectedResources, context.ResultsChanged),
+            WrongResult = xmlConvertService.Serialize(new ResultInfo { ResultItems = wrongResults, Type = context.Type }),
+            ActualResult = xmlConvertService.Serialize(new ResultInfo { ResultItems = actualResults, Type = context.Type }),
+            ExtraInfo = generateResultService.GenerateExtraInfo(context.SelectedResources, context.ResultsChanged, context.Type),
             ActionType = context.ActionType
         };
     }
@@ -136,32 +113,5 @@ public class AddSettlementResultHistoryHandler(
             _ => ReSettleType.UnKnow
         };
     }
-
-    private string GenerateExtraInfo(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged)
-    {
-        var extraInfoItems = new List<ExtraInfoItem>();
         Console.WriteLine($"GenerateExtraInfo {DateTimeOffset.Now}");
-        Console.WriteLine($"GenerateExtraInfo {DateTime.Now}");
-        foreach (var resource in selectedResources)
-        {
-            var resultChanged = resultsChanged.Find(y => y.ResourceId == resource.ResourceId);
-            if (resultChanged == null)
-            {
-                continue;
-            }
-
-            var extraInfoItem = new ExtraInfoItem
-            {
-                ResourceId = resultChanged.ResourceId,
-                CalcDateTime = resultChanged.LogDate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
-                ReCalcDateTime = DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
-            };
-
-            extraInfoItems.Add(extraInfoItem);
-        }
-
-        var extraInfo = new ExtraInfo { ExtraInfoItems = extraInfoItems };
-
-        return xmlConvertService.Serialize(extraInfo);
-    }
 }

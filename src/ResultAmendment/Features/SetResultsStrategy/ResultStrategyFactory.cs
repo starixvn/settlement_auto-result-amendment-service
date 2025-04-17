@@ -4,6 +4,12 @@ namespace ResultAmendment.Features.SetResultsStrategy;
 
 public static class ResultStrategyFactory
 {
+
+    public static ISetPositionStrategy GetPositionResultStrategy(string resourceId)
+    {
+        return new FastMarketResultStrategy();
+    }
+
     public static ISetResultStrategy GetStrategy(string resourceId, int groupBetType, List<string> mainResource)
     {
         if (mainResource.Contains(resourceId))
@@ -47,6 +53,12 @@ public static class ResultStrategyFactory
     private static bool IsTeamResult(string resourceId)
     {
         return resourceId is "604" or "605" or "3901";
+    }
+
+    private static bool IsFastMarketResult(string resourceId)
+    {
+        var fmResource = new List<string> { "221", "222", "223", "224", "225", "226", "227", "228", "229" };
+        return resourceId.StartsWith("221CNT") || fmResource.Contains(resourceId);
     }
 
     private static ISetResultStrategy GetLengthSixStrategy(string resourceId, int groupBetType)
