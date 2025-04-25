@@ -18,7 +18,7 @@ public class ResultHistoryTicketDetailInsCriteria : NonQueryCommand
     [SpParam(Ignored = true)]
     public string Type { get; set; } = ResultAmendmentType.Normal;
 
-    public override string GetSettingKey() => Type == ResultAmendmentType.Normal ? $"NAP_SettlementResultHistory_TicketDetails_Ins_{DbServer}" : $"NAP_SettlementResultHistory_TicketDetails_FM_Ins_{DbServer}";
+    public override string GetSettingKey() => Type == ResultAmendmentType.FastMarket ? $"NAP_SettlementResultHistory_TicketDetails_FM_Ins_{DbServer}" : $"NAP_SettlementResultHistory_TicketDetails_Ins_{DbServer}";
 
     public override bool IsValid() => true;
 }

@@ -10,8 +10,6 @@ public class FastMarketResultStrategy : ISetPositionStrategy
 
         wrongResult.ResourceId = resultChanged.First().ResourceId;
         actualResult.ResourceId = resourceItem.First().ResourceId;
-        wrongResult.RefBetTypeId = resultChanged.First().ResourceId;
-        actualResult.RefBetTypeId = resourceItem.First().ResourceId;
 
         wrongResult.Positions = resultChanged.Select(x => new PositionResult
         {
@@ -20,7 +18,9 @@ public class FastMarketResultStrategy : ISetPositionStrategy
             Away = x.AwayValue
         }).ToList();
 
-        actualResult.Positions = resourceItem.Select(x => new PositionResult
+        var actualResultBaseOnResultChanged = resultChanged.Select(o => o.OtherInfo);
+
+        actualResult.Positions = resourceItem.Where(r => actualResultBaseOnResultChanged.Contains(r.OtherInfo)).Select(x => new PositionResult
         {
             Position = x.OtherInfo,
             Home = x.HomeValue,

@@ -10,6 +10,12 @@ public class PositionResult
 
     [XmlAttribute("Away")]
     public string Away { get; set; }
+
+    [XmlAttribute("Recalc")]
+    public string ReCalcDateTime { get; set; }
+
+    [XmlAttribute("Calc")]
+    public string CalcDateTime { get; set; }
 }
 
 

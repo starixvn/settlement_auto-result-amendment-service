@@ -55,12 +55,6 @@ public static class ResultStrategyFactory
         return resourceId is "604" or "605" or "3901";
     }
 
-    private static bool IsFastMarketResult(string resourceId)
-    {
-        var fmResource = new List<string> { "221", "222", "223", "224", "225", "226", "227", "228", "229" };
-        return resourceId.StartsWith("221CNT") || fmResource.Contains(resourceId);
-    }
-
     private static ISetResultStrategy GetLengthSixStrategy(string resourceId, int groupBetType)
     {
         var laneResultPattern = new List<string> { "9113", "9114", "9130", "9135", "9138" };

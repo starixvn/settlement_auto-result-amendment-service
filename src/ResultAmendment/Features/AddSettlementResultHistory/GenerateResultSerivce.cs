@@ -71,11 +71,20 @@ public class GenerateResultService(XmlConvertService xmlConvertService) : IGener
 
     public string GenerateExtraInfo(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged, string type)
     {
+        var extraInfoItems = type == ResultAmendmentType.FastMarket ? FastMarketGenerate(selectedResources, resultsChanged) : NormalResultGenerate(selectedResources, resultsChanged);
+
+        var extraInfo = new ExtraInfo { ExtraInfoItems = extraInfoItems, Type = type };
+
+        return xmlConvertService.Serialize(extraInfo);
+    }
+
+    private List<ExtraInfoItem> NormalResultGenerate(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged)
+    {
         var extraInfoItems = new List<ExtraInfoItem>();
 
         foreach (var resource in selectedResources)
         {
-            var resultChanged = GetResultChanged(resultsChanged, resource, type);
+            var resultChanged = resultsChanged.FirstOrDefault(x => x.ResourceId == resource.ResourceId);
             if (resultChanged == null)
             {
                 continue;
@@ -91,16 +100,31 @@ public class GenerateResultService(XmlConvertService xmlConvertService) : IGener
             extraInfoItems.Add(extraInfoItem);
         }
 
-        var extraInfo = new ExtraInfo { ExtraInfoItems = extraInfoItems };
-
-        return xmlConvertService.Serialize(extraInfo);
+        return extraInfoItems;
     }
 
-    private ResultChanged GetResultChanged(List<ResultChanged> resultsChanged, ResourceItem resourceItem, string type)
+    private List<ExtraInfoItem> FastMarketGenerate(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged)
     {
-        return resultsChanged.FirstOrDefault(x =>
-            type == ResultAmendmentType.FastMarket
-                ? x.ResourceId == resourceItem.ResourceId && x.OtherInfo == resourceItem.OtherInfo
-                : x.ResourceId == resourceItem.ResourceId);
+        var extraInfoItems = new List<ExtraInfoItem>();
+
+        var bettypeGrouped = selectedResources.GroupBy(r => r.ResourceId);
+
+        foreach (var resource in bettypeGrouped)
+        {
+            var extraInfoItem = new ExtraInfoItem
+            {
+                ResourceId = resource.Key,
+                Positions = resultsChanged.Where(r => r.ResourceId == resource.Key).Select(r => new PositionResult
+                {
+                    Position = r.OtherInfo,
+                    CalcDateTime = r.LogDate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                    ReCalcDateTime = DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
+                }).ToList()
+            };
+
+            extraInfoItems.Add(extraInfoItem);
+        }
+
+        return extraInfoItems;
     }
 }
