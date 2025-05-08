@@ -140,7 +140,8 @@ public class AddSettlementResultHistoryHandler(
     private string GenerateExtraInfo(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged)
     {
         var extraInfoItems = new List<ExtraInfoItem>();
-
+        Console.WriteLine($"GenerateExtraInfo {DateTimeOffset.Now}");
+        Console.WriteLine($"GenerateExtraInfo {DateTime.Now}");
         foreach (var resource in selectedResources)
         {
             var resultChanged = resultsChanged.Find(y => y.ResourceId == resource.ResourceId);
