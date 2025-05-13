@@ -1,4 +1,5 @@
-﻿using Fanex.Data.Repository;
+﻿using System.Text.Json;
+using Fanex.Data.Repository;
 using Fanex.Settlement.Converter.Services;
 using Fanex.Settlement.MessageBridge.Constants;
 using Fanex.Settlement.MessageBridge.ResultAmendment;
@@ -6,7 +7,6 @@ using Microsoft.Extensions.Options;
 using ResultAmendment.Features.GetMainResource;
 using ResultAmendment.Models;
 using Shared;
-using System.Text.Json;
 
 namespace ResultAmendment.Features.AddSettlementResultHistory;
 
@@ -113,5 +113,4 @@ public class AddSettlementResultHistoryHandler(
             _ => ReSettleType.UnKnow
         };
     }
-        Console.WriteLine($"GenerateExtraInfo {DateTimeOffset.Now}");
 }
