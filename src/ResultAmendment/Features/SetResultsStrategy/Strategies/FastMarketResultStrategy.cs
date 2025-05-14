@@ -14,8 +14,8 @@ public class FastMarketResultStrategy : ISetPositionStrategy
         wrongResult.Positions = resultChanged.Select(x => new PositionResult
         {
             Position = x.OtherInfo,
-            Home = x.HomeValue,
-            Away = x.AwayValue
+            Home = x.HomeValue ?? string.Empty,
+            Away = x.AwayValue ?? string.Empty
         }).ToList();
 
         var actualResultBaseOnResultChanged = resultChanged.Select(o => o.OtherInfo);
@@ -23,8 +23,8 @@ public class FastMarketResultStrategy : ISetPositionStrategy
         actualResult.Positions = resourceItem.Where(r => actualResultBaseOnResultChanged.Contains(r.OtherInfo)).Select(x => new PositionResult
         {
             Position = x.OtherInfo,
-            Home = x.HomeValue,
-            Away = x.AwayValue
+            Home = x.HomeValue ?? string.Empty,
+            Away = x.AwayValue ?? string.Empty
         }).ToList();
 
         return (wrongResult, actualResult);

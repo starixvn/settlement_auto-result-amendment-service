@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Fanex.Data.Repository;
+﻿using Fanex.Data.Repository;
 using Fanex.Settlement.Converter.Services;
 using Fanex.Settlement.MessageBridge.Constants;
 using Fanex.Settlement.MessageBridge.ResultAmendment;
@@ -7,6 +6,7 @@ using Microsoft.Extensions.Options;
 using ResultAmendment.Features.GetMainResource;
 using ResultAmendment.Models;
 using Shared;
+using System.Text.Json;
 
 namespace ResultAmendment.Features.AddSettlementResultHistory;
 
@@ -110,6 +110,7 @@ public class AddSettlementResultHistoryHandler(
             var (b, c) when b.Contains(ActionType.RefundAll) && c.Contains(ActionType.CalculateAll) => ReSettleType.RefundToCalc,
             var (b, c) when b.Contains(ActionType.CalculateAll) && c.Contains(ActionType.RefundAll) => ReSettleType.CalcToRefund,
             var (b, c) when b.Contains(ActionType.CalculateAll) && c.Contains(ActionType.CalculateAll) => ReSettleType.ReCalc,
+            var (b, c) when b.Contains(ActionType.RefundAll) && c.Contains(ActionType.RefundAll) => ReSettleType.RefundToRefund,
             _ => ReSettleType.UnKnow
         };
     }

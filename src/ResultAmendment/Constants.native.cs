@@ -8,6 +8,8 @@ public static class ReSettleType
     public const short CalcToRefund = 2;
 
     public const short UnKnow = 0;
+
+    public const short RefundToRefund = 4;
 }
 
 

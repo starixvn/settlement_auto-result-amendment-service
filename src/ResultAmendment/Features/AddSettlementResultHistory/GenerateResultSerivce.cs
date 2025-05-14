@@ -125,6 +125,6 @@ public class GenerateResultService(XmlConvertService xmlConvertService) : IGener
             extraInfoItems.Add(extraInfoItem);
         }
 
-        return extraInfoItems;
+        return extraInfoItems.Where(r => r.Positions.Count != 0).ToList();
     }
 }
