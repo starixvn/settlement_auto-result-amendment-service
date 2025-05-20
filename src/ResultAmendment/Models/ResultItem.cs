@@ -35,8 +35,8 @@ public class ResultItem
         set => away = (value ?? string.Empty).ToUpper(CultureInfo.InvariantCulture);
     }
 
-    [XmlElement("p")]
-    public List<PositionResult> Positions { get; set; } = [];
+    [XmlAttribute("Pos")]
+    public string Position { get; set; }
 
     [XmlAttribute("RefBettypeID")]
     public string RefBetTypeId { get; set; }

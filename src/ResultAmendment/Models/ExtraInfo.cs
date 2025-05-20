@@ -24,6 +24,9 @@ public class ExtraInfoItem
     [XmlAttribute("Calc")]
     public string CalcDateTime { get; set; }
 
-    [XmlElement("p")]
-    public List<PositionResult> Positions { get; set; } = [];
+    [XmlAttribute("Pos")]
+    public string Position { get; set; }
+
+    [XmlAttribute("PosName")]
+    public string PositionName { get; set; }
 }

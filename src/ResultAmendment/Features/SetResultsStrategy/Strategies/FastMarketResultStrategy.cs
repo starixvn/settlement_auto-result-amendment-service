@@ -1,31 +1,26 @@
 using Fanex.Settlement.MessageBridge.ResultAmendment;
+using ResultAmendment.Features.SetResultsStrategy;
 using ResultAmendment.Models;
 
-public class FastMarketResultStrategy : ISetPositionStrategy
+public class FastMarketResultStrategy : ISetResultStrategy
 {
-    public (ResultItem wrongResult, ResultItem actualResult) Generate(IList<ResultChanged> resultChanged, IList<ResourceItem> resourceItem)
+    public (ResultItem wrongResult, ResultItem actualResult) Generate(ResultChanged resultChanged, ResourceItem resourceItem)
     {
-        var wrongResult = new ResultItem();
-        var actualResult = new ResultItem();
-
-        wrongResult.ResourceId = resultChanged.First().ResourceId;
-        actualResult.ResourceId = resourceItem.First().ResourceId;
-
-        wrongResult.Positions = resultChanged.Select(x => new PositionResult
+        var wrongResult = new ResultItem
         {
-            Position = x.OtherInfo,
-            Home = x.HomeValue ?? string.Empty,
-            Away = x.AwayValue ?? string.Empty
-        }).ToList();
+            ResourceId = resultChanged.ResourceId,
+            Position = resultChanged.OtherInfo.Split('|').First() ?? string.Empty,
+            Home = resultChanged.HomeValue ?? string.Empty,
+            Away = resultChanged.AwayValue ?? string.Empty
+        };
 
-        var actualResultBaseOnResultChanged = resultChanged.Select(o => o.OtherInfo);
-
-        actualResult.Positions = resourceItem.Where(r => actualResultBaseOnResultChanged.Contains(r.OtherInfo)).Select(x => new PositionResult
+        var actualResult = new ResultItem
         {
-            Position = x.OtherInfo,
-            Home = x.HomeValue ?? string.Empty,
-            Away = x.AwayValue ?? string.Empty
-        }).ToList();
+            ResourceId = resourceItem.ResourceId,
+            Position = resourceItem.OtherInfo.Split('|').First() ?? string.Empty,
+            Home = resourceItem.HomeValue ?? string.Empty,
+            Away = resourceItem.AwayValue ?? string.Empty
+        };
 
         return (wrongResult, actualResult);
     }

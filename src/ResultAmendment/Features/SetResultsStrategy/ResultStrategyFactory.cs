@@ -5,7 +5,7 @@ namespace ResultAmendment.Features.SetResultsStrategy;
 public static class ResultStrategyFactory
 {
 
-    public static ISetPositionStrategy GetPositionResultStrategy(string resourceId)
+    public static ISetResultStrategy GetPositionResultStrategy(string resourceId)
     {
         return new FastMarketResultStrategy();
     }
