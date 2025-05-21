@@ -20,8 +20,7 @@ public class AddSettlementResultHistoryHandler(
     public async Task HandleAsync(ResultAmended resultAmended)
     {
         var mainResourceIds = await getMainResourceHandler.HandlerAsync(resultAmended.SportType);
-
-        var groupedResults = GetTicketsGroupByResettleType(resultAmended.Action, resultAmended.ResultsChanged);
+        var groupedResults = GetTicketsGroupByResettleType(resultAmended.Action, resultAmended.Type, resultAmended.ResultsChanged);
         var resultHistoryItems = groupedResults.Select((group, index) =>
         {
             var context = new CreateResultHistoryItemContext
@@ -29,6 +28,7 @@ public class AddSettlementResultHistoryHandler(
                 ResultsChanged = group.ToList(),
                 SelectedResources = resultAmended.SelectedResources,
                 ActionType = group.Key,
+                Action = resultAmended.Action,
                 SequenceNumber = index + 1,
                 MainResourceIds = mainResourceIds,
                 Type = resultAmended.Type
@@ -69,7 +69,7 @@ public class AddSettlementResultHistoryHandler(
     private SettlementResultHistoryItem CreateResultHistoryItem(CreateResultHistoryItemContext context)
     {
         var (wrongResults, actualResults) = context.Type == ResultAmendmentType.FastMarket ?
-        generateResultService.GenerateFastMarketResult(context.ResultsChanged, context.SelectedResources) : generateResultService.GenerateWrongAndActualResults(
+        generateResultService.GenerateFastMarketResult(context.Action, context.ResultsChanged, context.SelectedResources) : generateResultService.GenerateWrongAndActualResults(
             context.ResultsChanged,
             context.SelectedResources,
             context.MainResourceIds);
@@ -84,10 +84,15 @@ public class AddSettlementResultHistoryHandler(
         };
     }
 
-    private static List<IGrouping<short, ResultChanged>> GetTicketsGroupByResettleType(string action, List<ResultChanged> results)
+    private static List<IGrouping<short, ResultChanged>> GetTicketsGroupByResettleType(string action, string type, List<ResultChanged> results)
     {
-        results.ForEach(x => x.ReSettleType = GetReSettleActionType(x.Action, action));
+        if (results.Count == 0)
+        {
+            return [];
+        }
 
+        var isActionMixed = results.Any(r => r.Action != results.First().Action);
+        results.ForEach(x => x.ReSettleType = GetReSettleActionType(x.Action, action, type, isActionMixed));
         var resultsChangedGroupBy = results
             .Where(x => x.ReSettleType != ReSettleType.UnKnow)
             .GroupBy(x => x.ReSettleType).ToList();
@@ -95,11 +100,16 @@ public class AddSettlementResultHistoryHandler(
         return resultsChangedGroupBy;
     }
 
-    private static short GetReSettleActionType(string beforeAction, string currentAction)
+    private static short GetReSettleActionType(string beforeAction, string currentAction, string type, bool actionMixed = false)
     {
         if (string.IsNullOrWhiteSpace(beforeAction) || string.IsNullOrWhiteSpace(currentAction))
         {
             return ReSettleType.UnKnow;
+        }
+
+        if (type == ResultAmendmentType.FastMarket && actionMixed)
+        {
+            return ReSettleType.FastMarketType;
         }
 
         var before = beforeAction.ToUpperInvariant();

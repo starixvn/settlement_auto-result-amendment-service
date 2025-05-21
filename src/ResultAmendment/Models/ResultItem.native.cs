@@ -58,4 +58,7 @@ public class ResultItem
 
     [XmlAttribute("GroupBetType")]
     public string GroupBetType { get; set; }
+
+    [XmlAttribute("Action")]
+    public string Action { get; set; }
 }

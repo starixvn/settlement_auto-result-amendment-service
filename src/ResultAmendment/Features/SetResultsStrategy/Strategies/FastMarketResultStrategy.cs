@@ -13,7 +13,8 @@ public class FastMarketResultStrategy : ISetResultStrategy
             ResourceId = resultChanged.ResourceId,
             Position = resultChanged.OtherInfo.Split('|').First() ?? string.Empty,
             Home = resultChanged.HomeValue ?? string.Empty,
-            Away = resultChanged.AwayValue ?? string.Empty
+            Away = resultChanged.AwayValue ?? string.Empty,
+            Action = resultChanged.Action,
         };
 
         var actualResult = new ResultItem
@@ -21,7 +22,8 @@ public class FastMarketResultStrategy : ISetResultStrategy
             ResourceId = resourceItem.ResourceId,
             Position = resourceItem.OtherInfo.Split('|').First() ?? string.Empty,
             Home = resourceItem.HomeValue ?? string.Empty,
-            Away = resourceItem.AwayValue ?? string.Empty
+            Away = resourceItem.AwayValue ?? string.Empty,
+            Action = resourceItem.Action,
         };
 
         return (wrongResult, actualResult);

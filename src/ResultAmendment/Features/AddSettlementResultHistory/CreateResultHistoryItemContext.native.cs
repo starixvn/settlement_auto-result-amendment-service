@@ -10,4 +10,6 @@ public class CreateResultHistoryItemContext
     public List<string> MainResourceIds { get; set; }
 
     public string Type { get; set; }
+
+    public string Action { get; set; }
 }

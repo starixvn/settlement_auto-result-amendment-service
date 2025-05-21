@@ -10,7 +10,7 @@
     <PackageReference Include="Fanex.Data.Repository" Version="4.3.2.1" />
     <PackageReference Include="Fanex.Logging" Version="2.0.2" />
     <PackageReference Include="Fanex.Settlement.Converter" Version="1.0.0.1" />
-    <PackageReference Include="Fanex.Settlement.MessageBridge" Version="1.0.4-alpha06" />
+    <PackageReference Include="Fanex.Settlement.MessageBridge" Version="1.0.4-alpha07" />
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.6" />
