@@ -78,7 +78,6 @@ public class SettlementResultHistoryRepositoryImp(
             Type = CheckXmlTypeAttribute(item.ActualResult) ?? ResultAmendmentType.Normal
         };
 
-        var a = criteria.GetSettingKey();
         await dynamicRepository.ExecuteAsync(criteria);
     }
 

@@ -1,9 +1,11 @@
 using Fanex.Settlement.MessageBridge.ResultAmendment;
 using ResultAmendment.Features.SetResultsStrategy;
 using ResultAmendment.Models;
+using System.Diagnostics.CodeAnalysis;
 
 public class FastMarketResultStrategy : ISetResultStrategy
 {
+    [SuppressMessage("ReSharper", "ConstantNullCoalescingCondition")]
     public (ResultItem wrongResult, ResultItem actualResult) Generate(ResultChanged resultChanged, ResourceItem resourceItem)
     {
         var wrongResult = new ResultItem

@@ -15,7 +15,6 @@ public class AddSettlementResultHistoryHandlerTests
     private readonly IDynamicRepository repository;
     private readonly XmlConvertService xmlConvertService;
     private readonly IGetMainResourceHandler mainResourceHandler;
-    readonly IGenerateResultService generateResultService;
 
     private readonly AddSettlementResultHistoryHandler addSettlementResultHistoryHandler;
 
@@ -24,7 +23,7 @@ public class AddSettlementResultHistoryHandlerTests
         repository = Substitute.For<IDynamicRepository>();
         xmlConvertService = Substitute.For<XmlConvertService>();
         mainResourceHandler = Substitute.For<IGetMainResourceHandler>();
-        generateResultService = Substitute.For<IGenerateResultService>();
+        var generateResultService1 = Substitute.For<IGenerateResultService>();
 
         var appSettingsOptions = Substitute.For<IOptions<AppSettings>>();
 
@@ -38,7 +37,7 @@ public class AddSettlementResultHistoryHandlerTests
             repository,
             xmlConvertService,
             mainResourceHandler,
-            generateResultService,
+            generateResultService1,
             appSettingsOptions);
     }
 

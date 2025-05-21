@@ -3,8 +3,6 @@ public static class GetPositionName
 {
     private const int NextOneMinute = 221;
 
-    private const int NextFiveMinutes = 222;
-
     private const int FirstNextOneMinute = 223;
 
     private const int NextOneMinuteSetPiece = 225;
@@ -19,7 +17,6 @@ public static class GetPositionName
 
     private const int FirstHalfInjuryTime = 45;
 
-    private const int TimeMachineHomeAwayRange = 10;
 
     public static string Get(string betType, string position)
     {
