@@ -4,6 +4,12 @@ namespace ResultAmendment.Features.SetResultsStrategy;
 
 public static class ResultStrategyFactory
 {
+
+    public static ISetResultStrategy GetPositionResultStrategy(string resourceId)
+    {
+        return new FastMarketResultStrategy();
+    }
+
     public static ISetResultStrategy GetStrategy(string resourceId, int groupBetType, List<string> mainResource)
     {
         if (mainResource.Contains(resourceId))

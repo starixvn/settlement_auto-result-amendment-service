@@ -7,6 +7,10 @@ public class ExtraInfo
 {
     [XmlElement("r")]
     public List<ExtraInfoItem> ExtraInfoItems { get; set; }
+
+    [XmlAttribute("type")]
+    public string Type { get; set; }
+
 }
 
 public class ExtraInfoItem
@@ -19,4 +23,10 @@ public class ExtraInfoItem
 
     [XmlAttribute("Calc")]
     public string CalcDateTime { get; set; }
+
+    [XmlAttribute("Pos")]
+    public string Position { get; set; }
+
+    [XmlAttribute("PosName")]
+    public string PositionName { get; set; }
 }

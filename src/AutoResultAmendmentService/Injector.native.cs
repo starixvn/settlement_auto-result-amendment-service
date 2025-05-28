@@ -4,6 +4,7 @@ using Fanex.Data.Repository;
 using Fanex.Logging.Sentry.RavenClient;
 using Fanex.Settlement.Converter.Services;
 using ONEbook.UM.DependencyInjection;
+using ResultAmendment.Features.AddSettlementResultHistory;
 using SettlementResultHistory.Services;
 using MailAppSettings = Fanex.MailDeliver.MailClient.AppSettings;
 
@@ -17,6 +18,7 @@ public static class Injector
         services.AddSingleton<SettlementResultHistoryService, SettlementResultHistoryServiceImp>();
         services.AddSingleton<SettlementResultHistoryRepository, SettlementResultHistoryRepositoryImp>();
         services.AddSingleton<XmlConvertService, XmlConvertServiceImp>();
+        services.AddSingleton<IGenerateResultService, GenerateResultService>();
         services.AddOneBookUmForService(configuration);
         services.AddFanexLogSentry(configuration);
 

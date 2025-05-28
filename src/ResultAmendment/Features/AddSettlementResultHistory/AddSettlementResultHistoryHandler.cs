@@ -1,12 +1,12 @@
-﻿using System.Text.Json;
-using Fanex.Data.Repository;
+﻿using Fanex.Data.Repository;
 using Fanex.Settlement.Converter.Services;
+using Fanex.Settlement.MessageBridge.Constants;
 using Fanex.Settlement.MessageBridge.ResultAmendment;
 using Microsoft.Extensions.Options;
 using ResultAmendment.Features.GetMainResource;
-using ResultAmendment.Features.SetResultsStrategy;
 using ResultAmendment.Models;
 using Shared;
+using System.Text.Json;
 
 namespace ResultAmendment.Features.AddSettlementResultHistory;
 
@@ -14,13 +14,13 @@ public class AddSettlementResultHistoryHandler(
     IDynamicRepository repository,
     XmlConvertService xmlConvertService,
     IGetMainResourceHandler getMainResourceHandler,
+    IGenerateResultService generateResultService,
     IOptions<AppSettings> appSettings)
 {
     public async Task HandleAsync(ResultAmended resultAmended)
     {
         var mainResourceIds = await getMainResourceHandler.HandlerAsync(resultAmended.SportType);
-
-        var groupedResults = GetTicketsGroupByResettleType(resultAmended.Action, resultAmended.ResultsChanged);
+        var groupedResults = GetTicketsGroupByResettleType(resultAmended.Action, resultAmended.Type, resultAmended.ResultsChanged);
         var resultHistoryItems = groupedResults.Select((group, index) =>
         {
             var context = new CreateResultHistoryItemContext
@@ -28,8 +28,10 @@ public class AddSettlementResultHistoryHandler(
                 ResultsChanged = group.ToList(),
                 SelectedResources = resultAmended.SelectedResources,
                 ActionType = group.Key,
+                Action = resultAmended.Action,
                 SequenceNumber = index + 1,
-                MainResourceIds = mainResourceIds
+                MainResourceIds = mainResourceIds,
+                Type = resultAmended.Type
             };
 
             return CreateResultHistoryItem(context);
@@ -64,35 +66,10 @@ public class AddSettlementResultHistoryHandler(
         await repository.ExecuteAsync(criteria);
     }
 
-    private (List<ResultItem> WrongResults, List<ResultItem> ActualResults) GenerateWrongAndActualResults(
-        List<ResultChanged> resultsChanged,
-        List<ResourceItem> selectedResources,
-        List<string> mainResourceIds)
-    {
-        var wrongResults = new List<ResultItem>();
-        var actualResults = new List<ResultItem>();
-
-        foreach (var item in selectedResources)
-        {
-            var resultChanged = resultsChanged.Find(x => x.ResourceId == item.ResourceId);
-            if (resultChanged == null)
-            {
-                continue;
-            }
-
-            var strategy = ResultStrategyFactory.GetStrategy(item.ResourceId, item.GroupBetType, mainResourceIds);
-            var (wrongResult, actualResult) = strategy.Generate(resultChanged, item);
-
-            wrongResults.Add(wrongResult);
-            actualResults.Add(actualResult);
-        }
-
-        return (wrongResults, actualResults);
-    }
-
     private SettlementResultHistoryItem CreateResultHistoryItem(CreateResultHistoryItemContext context)
     {
-        var (wrongResults, actualResults) = GenerateWrongAndActualResults(
+        var (wrongResults, actualResults) = context.Type == ResultAmendmentType.FastMarket ?
+        generateResultService.GenerateFastMarketResult(context.Action, context.ResultsChanged, context.SelectedResources) : generateResultService.GenerateWrongAndActualResults(
             context.ResultsChanged,
             context.SelectedResources,
             context.MainResourceIds);
@@ -100,17 +77,22 @@ public class AddSettlementResultHistoryHandler(
         return new SettlementResultHistoryItem
         {
             SeqNo = context.SequenceNumber,
-            WrongResult = xmlConvertService.Serialize(new ResultInfo { ResultItems = wrongResults }),
-            ActualResult = xmlConvertService.Serialize(new ResultInfo { ResultItems = actualResults }),
-            ExtraInfo = GenerateExtraInfo(context.SelectedResources, context.ResultsChanged),
+            WrongResult = xmlConvertService.Serialize(new ResultInfo { ResultItems = wrongResults, Type = context.Type }),
+            ActualResult = xmlConvertService.Serialize(new ResultInfo { ResultItems = actualResults, Type = context.Type }),
+            ExtraInfo = generateResultService.GenerateExtraInfo(context.SelectedResources, context.ResultsChanged, context.Type),
             ActionType = context.ActionType
         };
     }
 
-    private static List<IGrouping<short, ResultChanged>> GetTicketsGroupByResettleType(string action, List<ResultChanged> results)
+    private static List<IGrouping<short, ResultChanged>> GetTicketsGroupByResettleType(string action, string type, List<ResultChanged> results)
     {
-        results.ForEach(x => x.ReSettleType = GetReSettleActionType(x.Action, action));
+        if (results.Count == 0)
+        {
+            return [];
+        }
 
+        var isActionMixed = results.Any(r => r.Action != results.First().Action);
+        results.ForEach(x => x.ReSettleType = GetReSettleActionType(x.Action, action, type, isActionMixed));
         var resultsChangedGroupBy = results
             .Where(x => x.ReSettleType != ReSettleType.UnKnow)
             .GroupBy(x => x.ReSettleType).ToList();
@@ -118,11 +100,16 @@ public class AddSettlementResultHistoryHandler(
         return resultsChangedGroupBy;
     }
 
-    private static short GetReSettleActionType(string beforeAction, string currentAction)
+    private static short GetReSettleActionType(string beforeAction, string currentAction, string type, bool actionMixed = false)
     {
         if (string.IsNullOrWhiteSpace(beforeAction) || string.IsNullOrWhiteSpace(currentAction))
         {
             return ReSettleType.UnKnow;
+        }
+
+        if (type == ResultAmendmentType.FastMarket && actionMixed)
+        {
+            return ReSettleType.FastMarketType;
         }
 
         var before = beforeAction.ToUpperInvariant();
@@ -133,34 +120,8 @@ public class AddSettlementResultHistoryHandler(
             var (b, c) when b.Contains(ActionType.RefundAll) && c.Contains(ActionType.CalculateAll) => ReSettleType.RefundToCalc,
             var (b, c) when b.Contains(ActionType.CalculateAll) && c.Contains(ActionType.RefundAll) => ReSettleType.CalcToRefund,
             var (b, c) when b.Contains(ActionType.CalculateAll) && c.Contains(ActionType.CalculateAll) => ReSettleType.ReCalc,
+            var (b, c) when b.Contains(ActionType.RefundAll) && c.Contains(ActionType.RefundAll) => ReSettleType.RefundToRefund,
             _ => ReSettleType.UnKnow
         };
-    }
-
-    private string GenerateExtraInfo(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged)
-    {
-        var extraInfoItems = new List<ExtraInfoItem>();
-
-        foreach (var resource in selectedResources)
-        {
-            var resultChanged = resultsChanged.Find(y => y.ResourceId == resource.ResourceId);
-            if (resultChanged == null)
-            {
-                continue;
-            }
-
-            var extraInfoItem = new ExtraInfoItem
-            {
-                ResourceId = resultChanged.ResourceId,
-                CalcDateTime = resultChanged.LogDate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
-                ReCalcDateTime = DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")
-            };
-
-            extraInfoItems.Add(extraInfoItem);
-        }
-
-        var extraInfo = new ExtraInfo { ExtraInfoItems = extraInfoItems };
-
-        return xmlConvertService.Serialize(extraInfo);
     }
 }

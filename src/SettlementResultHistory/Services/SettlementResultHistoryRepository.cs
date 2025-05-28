@@ -1,4 +1,5 @@
 ﻿using Fanex.Caching;
+using Fanex.Settlement.MessageBridge.Constants;
 using SettlementResultHistory.Constants;
 using SettlementResultHistory.Criteria;
 using SettlementResultHistory.Models;
@@ -73,9 +74,36 @@ public class SettlementResultHistoryRepositoryImp(
             SessionId = item.SessionId,
             ErrorSessionIds = errorSessionIds,
             SportType = item.SportType,
-            DbServer = item.DbServer
+            DbServer = item.DbServer,
+            Type = CheckXmlTypeAttribute(item.ActualResult) ?? ResultAmendmentType.Normal
         };
+
         await dynamicRepository.ExecuteAsync(criteria);
+    }
+
+    private string CheckXmlTypeAttribute(string xmlString)
+    {
+        if (string.IsNullOrEmpty(xmlString))
+        {
+            return ResultAmendmentType.Normal;
+        }
+
+        try
+        {
+            var xmlDoc = new System.Xml.XmlDocument();
+            xmlDoc.LoadXml(xmlString);
+
+            if (xmlDoc.DocumentElement != null && xmlDoc.DocumentElement.Attributes["type"] != null)
+            {
+                return xmlDoc.DocumentElement.Attributes["type"].Value;
+            }
+        }
+        catch (System.Xml.XmlException)
+        {
+            return ResultAmendmentType.Normal;
+        }
+
+        return ResultAmendmentType.Normal;
     }
 
     public void InsLetsTalkMessage(ResultHistorySettled item)
