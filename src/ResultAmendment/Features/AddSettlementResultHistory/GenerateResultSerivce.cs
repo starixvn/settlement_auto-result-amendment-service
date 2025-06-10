@@ -97,20 +97,22 @@ public class GenerateResultService(XmlConvertService xmlConvertService) : IGener
 
     public string GenerateExtraInfo(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged, string type)
     {
-        var extraInfoItems = GenerateExtraInfoItems(selectedResources, resultsChanged, type == ResultAmendmentType.FastMarket);
+        var extraInfoItems = GenerateExtraInfoItems(selectedResources, resultsChanged, type);
 
         var extraInfo = new ExtraInfo { ExtraInfoItems = extraInfoItems, Type = type };
 
         return xmlConvertService.Serialize(extraInfo);
     }
 
-    private List<ExtraInfoItem> GenerateExtraInfoItems(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged, bool isFastMarket)
+    private List<ExtraInfoItem> GenerateExtraInfoItems(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged, string type)
     {
         var extraInfoItems = new List<ExtraInfoItem>();
+        var isFastMarket = type == ResultAmendmentType.FastMarket;
+        var isBetBuilder = type == "BB";
 
         foreach (var resource in selectedResources)
         {
-            var resultChanged = isFastMarket ? resultsChanged.FirstOrDefault(x => x.ResourceId == resource.ResourceId && x.OtherInfo == resource.OtherInfo)
+            var resultChanged = isFastMarket || isBetBuilder ? resultsChanged.FirstOrDefault(x => x.ResourceId == resource.ResourceId && x.OtherInfo == resource.OtherInfo)
                                         : resultsChanged.FirstOrDefault(x => x.ResourceId == resource.ResourceId);
 
             if (resultChanged is not null)
@@ -122,7 +124,8 @@ public class GenerateResultService(XmlConvertService xmlConvertService) : IGener
                     CalcDateTime = resultChanged.LogDate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
                     ReCalcDateTime = DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
                     Position = isFastMarket ? resource.OtherInfo : null,
-                    PositionName = positionName
+                    PositionName = positionName,
+                    MarketId = isBetBuilder ? resource.OtherInfo : null
                 };
 
                 extraInfoItems.Add(extraInfoItem);
