@@ -61,4 +61,7 @@ public class ResultItem
 
     [XmlAttribute("Action")]
     public string Action { get; set; }
+
+    [XmlAttribute("MarketId")]
+    public string MarketId { get; set; }
 }

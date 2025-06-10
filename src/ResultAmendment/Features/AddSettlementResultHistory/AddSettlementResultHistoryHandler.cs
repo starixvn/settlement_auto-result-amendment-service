@@ -21,6 +21,7 @@ public class AddSettlementResultHistoryHandler(
     {
         var mainResourceIds = await getMainResourceHandler.HandlerAsync(resultAmended.SportType);
         var groupedResults = GetTicketsGroupByResettleType(resultAmended.Action, resultAmended.Type, resultAmended.ResultsChanged);
+
         var resultHistoryItems = groupedResults.Select((group, index) =>
         {
             var context = new CreateResultHistoryItemContext
@@ -31,7 +32,7 @@ public class AddSettlementResultHistoryHandler(
                 Action = resultAmended.Action,
                 SequenceNumber = index + 1,
                 MainResourceIds = mainResourceIds,
-                Type = resultAmended.Type
+                Type = resultAmended.Type,
             };
 
             return CreateResultHistoryItem(context);
@@ -68,11 +69,12 @@ public class AddSettlementResultHistoryHandler(
 
     private SettlementResultHistoryItem CreateResultHistoryItem(CreateResultHistoryItemContext context)
     {
-        var (wrongResults, actualResults) = context.Type == ResultAmendmentType.FastMarket ?
-        generateResultService.GenerateFastMarketResult(context.Action, context.ResultsChanged, context.SelectedResources) : generateResultService.GenerateWrongAndActualResults(
-            context.ResultsChanged,
-            context.SelectedResources,
-            context.MainResourceIds);
+        var (wrongResults, actualResults) = context.Type switch
+        {
+            "FM" => generateResultService.GenerateFastMarketResult(context.Action, context.ResultsChanged, context.SelectedResources),
+            "BB" => generateResultService.GenerateBetBuilderResult(context.ResultsChanged, context.SelectedResources),
+            _ => generateResultService.GenerateWrongAndActualResults(context.ResultsChanged, context.SelectedResources, context.MainResourceIds)
+        };
 
         return new SettlementResultHistoryItem
         {
@@ -92,7 +94,9 @@ public class AddSettlementResultHistoryHandler(
         }
 
         var isActionMixed = results.Any(r => r.Action != results.First().Action);
+
         results.ForEach(x => x.ReSettleType = GetReSettleActionType(x.Action, action, type, isActionMixed));
+
         var resultsChangedGroupBy = results
             .Where(x => x.ReSettleType != ReSettleType.UnKnow)
             .GroupBy(x => x.ReSettleType).ToList();
@@ -107,7 +111,12 @@ public class AddSettlementResultHistoryHandler(
             return ReSettleType.UnKnow;
         }
 
-        if (type == ResultAmendmentType.FastMarket && actionMixed)
+        if ((type == ResultAmendmentType.FastMarket) && actionMixed)
+        {
+            return ReSettleType.FastMarketType;
+        }
+
+        if (type == "BB")
         {
             return ReSettleType.FastMarketType;
         }

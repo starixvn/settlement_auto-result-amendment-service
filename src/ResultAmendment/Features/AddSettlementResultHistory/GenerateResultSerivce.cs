@@ -4,6 +4,7 @@ using Fanex.Settlement.MessageBridge.ResultAmendment;
 using ResultAmendment.Features.GetFastMarketInfo;
 using ResultAmendment.Features.SetResultsStrategy;
 using ResultAmendment.Models;
+using Results = (System.Collections.Generic.List<ResultAmendment.Models.ResultItem> WrongResults, System.Collections.Generic.List<ResultAmendment.Models.ResultItem> ActualResults);
 
 namespace ResultAmendment.Features.AddSettlementResultHistory;
 
@@ -15,6 +16,8 @@ public interface IGenerateResultService
         List<string> mainResourceIds);
 
     (List<ResultItem> WrongResults, List<ResultItem> ActualResults) GenerateFastMarketResult(string action, List<ResultChanged> resultChanged, List<ResourceItem> selectedResources);
+
+    Results GenerateBetBuilderResult(List<ResultChanged> resultChanged, List<ResourceItem> selectedResources);
 
     string GenerateExtraInfo(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged, string type);
 }
@@ -60,6 +63,29 @@ public class GenerateResultService(XmlConvertService xmlConvertService) : IGener
             if (resultsChanged is not null)
             {
                 item.Action = action;
+                var (wrongResult, actualResult) = strategy.Generate(resultsChanged, item);
+
+                wrongResults.Add(wrongResult);
+                actualResults.Add(actualResult);
+            }
+        }
+        return (wrongResults, actualResults);
+    }
+
+    public Results GenerateBetBuilderResult(
+        List<ResultChanged> resultChanged,
+        List<ResourceItem> selectedResources)
+    {
+        var wrongResults = new List<ResultItem>();
+        var actualResults = new List<ResultItem>();
+
+        foreach (var item in selectedResources)
+        {
+            var strategy = ResultStrategyFactory.GetBetbuilderResultStrategy();
+            var resultsChanged = resultChanged.FirstOrDefault(x => x.ResourceId == item.ResourceId && x.OtherInfo == item.OtherInfo);
+
+            if (resultsChanged is not null)
+            {
                 var (wrongResult, actualResult) = strategy.Generate(resultsChanged, item);
 
                 wrongResults.Add(wrongResult);

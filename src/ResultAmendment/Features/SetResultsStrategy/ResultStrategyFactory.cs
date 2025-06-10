@@ -10,6 +10,11 @@ public static class ResultStrategyFactory
         return new FastMarketResultStrategy();
     }
 
+    public static ISetResultStrategy GetBetbuilderResultStrategy()
+    {
+        return new BetbuilderResultStrategy();
+    }
+
     public static ISetResultStrategy GetStrategy(string resourceId, int groupBetType, List<string> mainResource)
     {
         if (mainResource.Contains(resourceId))
