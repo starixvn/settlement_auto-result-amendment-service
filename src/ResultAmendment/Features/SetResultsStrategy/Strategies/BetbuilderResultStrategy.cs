@@ -3,27 +3,26 @@ using ResultAmendment.Models;
 
 namespace ResultAmendment.Features.SetResultsStrategy.Strategies;
 
-public class BetbuilderResultStrategy : ISetResultStrategy
+public class BetBuilderResultStrategy : ISetResultStrategy
 {
     public (ResultItem wrongResult, ResultItem actualResult) Generate(ResultChanged resultChanged, ResourceItem resourceItem)
     {
         var wrongResult = new ResultItem
         {
             ResourceId = resultChanged.ResourceId,
-            Home = resultChanged.HomeValue ?? string.Empty,
-            Away = resultChanged.AwayValue ?? string.Empty,
+            Home = resultChanged.HomeValue,
+            Away = resultChanged.AwayValue,
             Action = resultChanged.Action,
-            MarketId = resultChanged.OtherInfo ?? string.Empty
+            MarketId = resultChanged.OtherInfo
         };
 
         var actualResult = new ResultItem
         {
             ResourceId = resourceItem.ResourceId,
-            Home = resourceItem.HomeValue ?? string.Empty,
-            Away = resourceItem.AwayValue ?? string.Empty,
+            Home = resourceItem.HomeValue,
+            Away = resourceItem.AwayValue,
             Action = resourceItem.Action,
-            MarketId = resourceItem.OtherInfo ?? string.Empty
-
+            MarketId = resourceItem.OtherInfo
         };
 
         return (wrongResult, actualResult);

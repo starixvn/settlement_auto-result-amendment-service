@@ -82,7 +82,7 @@ public class SettlementResultHistoryServiceTests
             new() { SessionId = "abc" }
         ]);
         MailAppSettings.AppMailId = "1";
-        MailAppSettings.AppMailAddress = "http://10.18.200.131:8787/";
+        MailAppSettings.AppMailAddress = "http://mail_service.nexdev.net:8787/";
         // Act
         await service.Handle();
 

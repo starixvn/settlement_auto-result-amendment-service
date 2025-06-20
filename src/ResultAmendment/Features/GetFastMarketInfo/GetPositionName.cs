@@ -1,4 +1,8 @@
 ﻿namespace ResultAmendment.Features.GetFastMarketInfo;
+
+using System;
+using System.Collections.Generic;
+
 public static class GetPositionName
 {
     private const int NextOneMinute = 221;
@@ -17,6 +21,15 @@ public static class GetPositionName
 
     private const int FirstHalfInjuryTime = 45;
 
+    private static readonly Dictionary<int, Func<int, string>> BetTypeHandlers = new()
+    {
+        [NextOneMinute] = OneMinuteInterval,
+        [FirstNextOneMinute] = OneMinuteInterval,
+        [NextOneMinuteSetPiece] = OneMinuteInterval,
+        [CombinationNextOneMinute] = OneMinuteInterval,
+        [TimeMachineMinutes] = GetTimeMachinePositionName,
+        [TimeMachineHdp] = GetTimeMachinePositionName,
+    };
 
     public static string Get(string betType, string position)
     {
@@ -25,23 +38,19 @@ public static class GetPositionName
             return string.Empty;
         }
 
-        switch (betTypeId)
-        {
-            case NextOneMinute:
-            case FirstNextOneMinute:
-            case NextOneMinuteSetPiece:
-            case CombinationNextOneMinute:
-                return OneMinuteInterval(positionId);
+        return BetTypeHandlers.TryGetValue(betTypeId, out var handler)
+            ? handler(positionId)
+            : FiveMinutesInterval(positionId);
+    }
 
-            case TimeMachineMinutes:
-            case TimeMachineHdp:
-                {
-                    var interval = positionId > FirstHalfInjuryTime ? positionId - 1 : positionId;
-                    return positionId == FirstHalfInjuryTime ? "First Half Injury Time" : TimeMachineInterval(interval);
-                }
-            default:
-                return FiveMinutesInterval(positionId);
+    private static string GetTimeMachinePositionName(int positionId)
+    {
+        if (positionId == FirstHalfInjuryTime)
+        {
+            return "First Half Injury Time";
         }
+        var interval = positionId > FirstHalfInjuryTime ? positionId - 1 : positionId;
+        return TimeMachineInterval(interval);
     }
 
     private static string OneMinuteInterval(int position)
