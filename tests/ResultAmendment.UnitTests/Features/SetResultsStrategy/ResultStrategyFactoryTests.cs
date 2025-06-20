@@ -1,7 +1,7 @@
 ﻿using ResultAmendment.Features.SetResultsStrategy;
 using ResultAmendment.Features.SetResultsStrategy.Strategies;
 
-namespace ResultAmendment.UnitTests.Features;
+namespace ResultAmendment.UnitTests.Features.SetResultsStrategy;
 
 public class ResultStrategyFactoryTests
 {

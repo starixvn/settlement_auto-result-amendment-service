@@ -8,7 +8,7 @@ using ResultAmendment.Features.AddSettlementResultHistory;
 using ResultAmendment.Features.GetMainResource;
 using Shared;
 
-namespace ResultAmendment.UnitTests.Features;
+namespace ResultAmendment.UnitTests.Features.AddSettlementResultHistory;
 
 public class AddSettlementResultHistoryHandlerTests
 {

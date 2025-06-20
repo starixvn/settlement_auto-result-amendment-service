@@ -5,7 +5,7 @@ using NSubstitute;
 using ResultAmendment.Features.AddSettlementResultHistory;
 using ResultAmendment.Models;
 
-namespace ResultAmendment.UnitTests.Features;
+namespace ResultAmendment.UnitTests.Features.AddSettlementResultHistory;
 
 public class GenerateResultServiceTests
 {
