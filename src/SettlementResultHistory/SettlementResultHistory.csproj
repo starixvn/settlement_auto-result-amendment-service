@@ -10,12 +10,12 @@
   <ItemGroup>
     <PackageReference Include="Fanex.Caching" Version="2.2.8" />
     <PackageReference Include="Fanex.Caching.Redis" Version="2.2.8" />
-    <PackageReference Include="Fanex.Data.Repository" Version="4.3.2.1" />
-    <PackageReference Include="Fanex.Data.SqlServer" Version="4.3.2.1" />
+    <PackageReference Include="Fanex.Data.Repository" Version="4.3.4.3" />
+    <PackageReference Include="Fanex.Data.SqlServer" Version="4.3.4.3" />
     <PackageReference Include="Fanex.Logging" Version="2.0.2" />
     <PackageReference Include="Fanex.MailDeliver.MailClient" Version="2.1.0" />
     <PackageReference Include="Fanex.Settlement.Converter" Version="1.0.0.1" />
-    <PackageReference Include="ONEbook.UM" Version="3.2.4" />
+    <PackageReference Include="ONEbook.UM" Version="3.2.6" />
      <PackageReference Include="Fanex.Settlement.MessageBridge" Version="1.0.8" />
   </ItemGroup>
   <ItemGroup>
