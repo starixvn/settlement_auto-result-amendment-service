@@ -6,17 +6,17 @@ using ResultAmendment.Consumers;
 using Shared;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
 
-builder.Services.AddFanexSql(builder.Configuration);
+services.AddFanexSql(builder.Configuration);
 
-builder.Services.Configure<AppSettings>(builder.Configuration);
+services.Configure<AppSettings>(builder.Configuration);
 
-builder.Services.InitializeServices(builder.Configuration);
+services.InitializeServices(builder.Configuration);
 
-builder
-    .AddResultAmendmentModule();
+builder.AddResultAmendmentModule();
 
-builder.Services.AddMassTransit(x =>
+services.AddMassTransit(x =>
 {
     x.SetKebabCaseEndpointNameFormatter();
 
@@ -40,13 +40,11 @@ builder.Services.AddMassTransit(x =>
     x.AddResultAmendConsumers();
 });
 
-builder.Services.AddHostedService<AutoService>();
+services.AddHostedService<AutoService>();
+services.AddHealthChecks();
 
 var app = builder.Build();
 
-app.Run(async context =>
-{
-    await context.Response.WriteAsync("OK");
-});
+app.MapHealthChecks("/healthz");
 
 app.Run();
