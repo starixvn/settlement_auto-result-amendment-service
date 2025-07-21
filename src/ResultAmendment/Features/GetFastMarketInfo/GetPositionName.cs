@@ -1,4 +1,5 @@
 ﻿namespace ResultAmendment.Features.GetFastMarketInfo;
+
 public static class GetPositionName
 {
     private const int NextOneMinute = 221;
@@ -17,7 +18,6 @@ public static class GetPositionName
 
     private const int FirstHalfInjuryTime = 45;
 
-
     public static string Get(string betType, string position)
     {
         if (!int.TryParse(betType, out var betTypeId) || !int.TryParse(position, out var positionId))
@@ -25,23 +25,40 @@ public static class GetPositionName
             return string.Empty;
         }
 
-        switch (betTypeId)
-        {
-            case NextOneMinute:
-            case FirstNextOneMinute:
-            case NextOneMinuteSetPiece:
-            case CombinationNextOneMinute:
-                return OneMinuteInterval(positionId);
+        return GetPositionNameByBetType(betTypeId, positionId);
+    }
 
-            case TimeMachineMinutes:
-            case TimeMachineHdp:
-                {
-                    var interval = positionId > FirstHalfInjuryTime ? positionId - 1 : positionId;
-                    return positionId == FirstHalfInjuryTime ? "First Half Injury Time" : TimeMachineInterval(interval);
-                }
-            default:
-                return FiveMinutesInterval(positionId);
+    private static string GetPositionNameByBetType(int betTypeId, int positionId)
+    {
+        if (IsOneMinuteBetType(betTypeId))
+        {
+            return OneMinuteInterval(positionId);
         }
+
+        return IsTimeMachineBetType(betTypeId)
+            ? GetTimeMachinePositionName(positionId)
+            : FiveMinutesInterval(positionId);
+    }
+
+    private static bool IsOneMinuteBetType(int betTypeId)
+    {
+        return betTypeId is NextOneMinute or FirstNextOneMinute or NextOneMinuteSetPiece or CombinationNextOneMinute;
+    }
+
+    private static bool IsTimeMachineBetType(int betTypeId)
+    {
+        return betTypeId is TimeMachineMinutes or TimeMachineHdp;
+    }
+
+    private static string GetTimeMachinePositionName(int positionId)
+    {
+        if (positionId == FirstHalfInjuryTime)
+        {
+            return "First Half Injury Time";
+        }
+
+        var interval = positionId > FirstHalfInjuryTime ? positionId - 1 : positionId;
+        return TimeMachineInterval(interval);
     }
 
     private static string OneMinuteInterval(int position)

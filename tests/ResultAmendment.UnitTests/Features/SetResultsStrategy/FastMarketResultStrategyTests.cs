@@ -1,4 +1,7 @@
 using Fanex.Settlement.MessageBridge.ResultAmendment;
+using ResultAmendment.Features.SetResultsStrategy.Strategies;
+
+namespace ResultAmendment.UnitTests.Features.SetResultsStrategy;
 
 public class FastMarketResultStrategyTests
 {

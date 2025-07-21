@@ -2,6 +2,14 @@
 	<s:String x:Key="/Default/CodeInspection/Highlighting/SweaWarningsMode/@EntryValue">ShowAndRun</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ClassNeverInstantiated_002EGlobal/@EntryIndexedValue">DO_NOT_SHOW</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=RedundantRecordClassKeyword/@EntryIndexedValue">DO_NOT_SHOW</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a97a731b_002Dccc1_002D494d_002D891e_002D5e5f8413dd52/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Process_ShouldHandleSuccessfulResultHistory" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::11369329-680D-486F-AA5F-F35393DEE3DB::net9.0::SettlementResultHistory.UnitTests.Services.SettlementResultHistoryServiceTests.Process_ShouldHandleSuccessfulResultHistory&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::2F904D48-371E-4378-95C3-F4CFFB00CCA9::net9.0::ResultAmendment.UnitTests.Features.AddSettlementResultHistory.GenerateResultServiceTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::2F904D48-371E-4378-95C3-F4CFFB00CCA9::net9.0::ResultAmendment.UnitTests.Features.SetResultsStrategy.ResultStrategyFactoryTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::2F904D48-371E-4378-95C3-F4CFFB00CCA9::net9.0::ResultAmendment.UnitTests.Features.SetResultsStrategy.ResultInfoHelpersTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Letstalk/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=bodb/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=DBLOG/@EntryIndexedValue">True</s:Boolean>

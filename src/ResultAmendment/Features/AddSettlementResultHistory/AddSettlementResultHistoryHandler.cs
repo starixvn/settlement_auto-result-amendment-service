@@ -106,20 +106,38 @@ public class AddSettlementResultHistoryHandler(
             return ReSettleType.UnKnow;
         }
 
-        if (type == ResultAmendmentType.FastMarket)
+        return type == ResultAmendmentType.FastMarket
+            ? ReSettleType.FastMarketType
+            : DetermineActionType(beforeAction.ToUpperInvariant(), currentAction.ToUpperInvariant());
+    }
+
+    private static short DetermineActionType(string before, string current)
+    {
+        if (IsRefundToCalculate(before, current))
         {
-            return ReSettleType.FastMarketType;
+            return ReSettleType.RefundToCalc;
         }
 
-        var before = beforeAction.ToUpperInvariant();
-        var current = currentAction.ToUpperInvariant();
-
-        return (before, current) switch
+        if (IsCalculateToRefund(before, current))
         {
-            var (b, c) when b.Contains(ActionType.RefundAll) && c.Contains(ActionType.CalculateAll) => ReSettleType.RefundToCalc,
-            var (b, c) when b.Contains(ActionType.CalculateAll) && c.Contains(ActionType.RefundAll) => ReSettleType.CalcToRefund,
-            var (b, c) when b.Contains(ActionType.CalculateAll) && c.Contains(ActionType.CalculateAll) => ReSettleType.ReCalc,
-            _ => ReSettleType.UnKnow
-        };
+            return ReSettleType.CalcToRefund;
+        }
+
+        return IsRecalculate(before, current) ? ReSettleType.ReCalc : ReSettleType.UnKnow;
+    }
+
+    private static bool IsRefundToCalculate(string before, string current)
+    {
+        return before.Contains(ActionType.RefundAll) && current.Contains(ActionType.CalculateAll);
+    }
+
+    private static bool IsCalculateToRefund(string before, string current)
+    {
+        return before.Contains(ActionType.CalculateAll) && current.Contains(ActionType.RefundAll);
+    }
+
+    private static bool IsRecalculate(string before, string current)
+    {
+        return before.Contains(ActionType.CalculateAll) && current.Contains(ActionType.CalculateAll);
     }
 }

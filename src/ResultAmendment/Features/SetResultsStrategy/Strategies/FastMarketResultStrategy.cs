@@ -1,28 +1,27 @@
 using Fanex.Settlement.MessageBridge.ResultAmendment;
-using ResultAmendment.Features.SetResultsStrategy;
 using ResultAmendment.Models;
-using System.Diagnostics.CodeAnalysis;
+
+namespace ResultAmendment.Features.SetResultsStrategy.Strategies;
 
 public class FastMarketResultStrategy : ISetResultStrategy
 {
-    [SuppressMessage("ReSharper", "ConstantNullCoalescingCondition")]
     public (ResultItem wrongResult, ResultItem actualResult) Generate(ResultChanged resultChanged, ResourceItem resourceItem)
     {
         var wrongResult = new ResultItem
         {
             ResourceId = resultChanged.ResourceId,
-            Position = resultChanged.OtherInfo.Split('|').First() ?? string.Empty,
-            Home = resultChanged.HomeValue ?? string.Empty,
-            Away = resultChanged.AwayValue ?? string.Empty,
+            Position = resultChanged.OtherInfo.Split('|')[0],
+            Home = resultChanged.HomeValue,
+            Away = resultChanged.AwayValue,
             Action = resultChanged.Action,
         };
 
         var actualResult = new ResultItem
         {
             ResourceId = resourceItem.ResourceId,
-            Position = resourceItem.OtherInfo.Split('|').First() ?? string.Empty,
-            Home = resourceItem.HomeValue ?? string.Empty,
-            Away = resourceItem.AwayValue ?? string.Empty,
+            Position = resourceItem.OtherInfo.Split('|')[0],
+            Home = resourceItem.HomeValue,
+            Away = resourceItem.AwayValue,
             Action = resourceItem.Action,
         };
 

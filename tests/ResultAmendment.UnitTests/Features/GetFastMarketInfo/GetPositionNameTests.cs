@@ -1,5 +1,7 @@
 using ResultAmendment.Features.GetFastMarketInfo;
 
+namespace ResultAmendment.UnitTests.Features.GetFastMarketInfo;
+
 public class GetPositionNameTests
 {
     [Theory]

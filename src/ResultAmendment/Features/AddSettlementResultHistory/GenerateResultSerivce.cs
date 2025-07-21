@@ -47,7 +47,6 @@ public class GenerateResultService(XmlConvertService xmlConvertService) : IGener
         return (wrongResults, actualResults);
     }
 
-
     public (List<ResultItem> WrongResults, List<ResultItem> ActualResults) GenerateFastMarketResult(string action, List<ResultChanged> resultChanged, List<ResourceItem> selectedResources)
     {
         var wrongResults = new List<ResultItem>();
@@ -56,7 +55,8 @@ public class GenerateResultService(XmlConvertService xmlConvertService) : IGener
         foreach (var item in selectedResources)
         {
             var strategy = ResultStrategyFactory.GetPositionResultStrategy(item.ResourceId);
-            var resultsChanged = resultChanged.FirstOrDefault(x => x.ResourceId == item.ResourceId && x.OtherInfo == item.OtherInfo);
+            var resultsChanged = resultChanged.Find(x => x.ResourceId == item.ResourceId && x.OtherInfo == item.OtherInfo);
+
             if (resultsChanged is not null)
             {
                 item.Action = action;
@@ -78,14 +78,14 @@ public class GenerateResultService(XmlConvertService xmlConvertService) : IGener
         return xmlConvertService.Serialize(extraInfo);
     }
 
-    private List<ExtraInfoItem> GenerateExtraInfoItems(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged, bool isFastMarket)
+    private static List<ExtraInfoItem> GenerateExtraInfoItems(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged, bool isFastMarket)
     {
         var extraInfoItems = new List<ExtraInfoItem>();
 
         foreach (var resource in selectedResources)
         {
-            var resultChanged = isFastMarket ? resultsChanged.FirstOrDefault(x => x.ResourceId == resource.ResourceId && x.OtherInfo == resource.OtherInfo)
-                                        : resultsChanged.FirstOrDefault(x => x.ResourceId == resource.ResourceId);
+            var resultChanged = isFastMarket ? resultsChanged.Find(x => x.ResourceId == resource.ResourceId && x.OtherInfo == resource.OtherInfo)
+                                        : resultsChanged.Find(x => x.ResourceId == resource.ResourceId);
 
             if (resultChanged is not null)
             {
@@ -105,5 +105,4 @@ public class GenerateResultService(XmlConvertService xmlConvertService) : IGener
 
         return extraInfoItems;
     }
-
 }
