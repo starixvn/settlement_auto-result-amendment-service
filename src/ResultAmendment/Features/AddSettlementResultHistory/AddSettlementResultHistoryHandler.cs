@@ -91,8 +91,7 @@ public class AddSettlementResultHistoryHandler(
             return [];
         }
 
-        var isActionMixed = results.Any(r => r.Action != results.First().Action);
-        results.ForEach(x => x.ReSettleType = GetReSettleActionType(x.Action, action, type, isActionMixed));
+        results.ForEach(x => x.ReSettleType = GetReSettleActionType(x.Action, action, type));
         var resultsChangedGroupBy = results
             .Where(x => x.ReSettleType != ReSettleType.UnKnow)
             .GroupBy(x => x.ReSettleType).ToList();
@@ -100,14 +99,14 @@ public class AddSettlementResultHistoryHandler(
         return resultsChangedGroupBy;
     }
 
-    private static short GetReSettleActionType(string beforeAction, string currentAction, string type, bool actionMixed = false)
+    private static short GetReSettleActionType(string beforeAction, string currentAction, string type)
     {
         if (string.IsNullOrWhiteSpace(beforeAction) || string.IsNullOrWhiteSpace(currentAction))
         {
             return ReSettleType.UnKnow;
         }
 
-        if (type == ResultAmendmentType.FastMarket && actionMixed)
+        if (type == ResultAmendmentType.FastMarket)
         {
             return ReSettleType.FastMarketType;
         }
@@ -120,7 +119,6 @@ public class AddSettlementResultHistoryHandler(
             var (b, c) when b.Contains(ActionType.RefundAll) && c.Contains(ActionType.CalculateAll) => ReSettleType.RefundToCalc,
             var (b, c) when b.Contains(ActionType.CalculateAll) && c.Contains(ActionType.RefundAll) => ReSettleType.CalcToRefund,
             var (b, c) when b.Contains(ActionType.CalculateAll) && c.Contains(ActionType.CalculateAll) => ReSettleType.ReCalc,
-            var (b, c) when b.Contains(ActionType.RefundAll) && c.Contains(ActionType.RefundAll) => ReSettleType.RefundToRefund,
             _ => ReSettleType.UnKnow
         };
     }
