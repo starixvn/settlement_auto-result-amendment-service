@@ -31,7 +31,8 @@ public class AddSettlementResultHistoryHandler(
                 Action = resultAmended.Action,
                 SequenceNumber = index + 1,
                 MainResourceIds = mainResourceIds,
-                Type = resultAmended.Type
+                Type = resultAmended.Type,
+                SportType = resultAmended.SportType
             };
 
             return CreateResultHistoryItem(context);
@@ -68,11 +69,9 @@ public class AddSettlementResultHistoryHandler(
 
     private SettlementResultHistoryItem CreateResultHistoryItem(CreateResultHistoryItemContext context)
     {
-        var (wrongResults, actualResults) = context.Type == ResultAmendmentType.FastMarket ?
-        generateResultService.GenerateFastMarketResult(context.Action, context.ResultsChanged, context.SelectedResources) : generateResultService.GenerateWrongAndActualResults(
-            context.ResultsChanged,
-            context.SelectedResources,
-            context.MainResourceIds);
+        var (wrongResults, actualResults) = context.Type == ResultAmendmentType.FastMarket
+            ? generateResultService.GenerateFastMarketResult(context.Action, context.ResultsChanged, context.SelectedResources)
+            : generateResultService.GenerateWrongAndActualResults(context.ResultsChanged, context.SelectedResources, context.MainResourceIds, context.SportType);
 
         return new SettlementResultHistoryItem
         {

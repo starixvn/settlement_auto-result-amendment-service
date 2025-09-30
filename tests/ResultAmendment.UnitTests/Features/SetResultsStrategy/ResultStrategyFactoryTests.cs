@@ -12,9 +12,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "00";
         var groupBetType = 0;
         var mainResource = new List<string> { "00" };
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<MainResultStrategy>(strategy);
@@ -27,9 +28,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "Q1";
         var groupBetType = 0;
         var mainResource = new List<string> { "Q1", "Q2", "Q3" };
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<MainResultStrategy>(strategy);
@@ -42,9 +44,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "604";
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<TeamResultStrategy>(strategy);
@@ -57,9 +60,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "605";
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<TeamResultStrategy>(strategy);
@@ -72,9 +76,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "3901";
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<TeamResultStrategy>(strategy);
@@ -87,9 +92,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "606123";
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<TeamXXResultStrategy>(strategy);
@@ -102,9 +108,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "607456";
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<TeamXXResultStrategy>(strategy);
@@ -117,9 +124,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "617789";
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<TeamXXResultStrategy>(strategy);
@@ -132,9 +140,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "613123";
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<TeamXXYYResultStrategy>(strategy);
@@ -147,9 +156,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "712456";
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<TeamXXYYResultStrategy>(strategy);
@@ -162,9 +172,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "713789";
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<TeamXXYYResultStrategy>(strategy);
@@ -183,9 +194,11 @@ public class ResultStrategyFactoryTests
         // Arrange
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
+
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<MapXLaneResultStrategy>(strategy);
@@ -202,9 +215,11 @@ public class ResultStrategyFactoryTests
         // Arrange
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
+
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<MapXYesNoResultStrategy>(strategy);
@@ -218,9 +233,10 @@ public class ResultStrategyFactoryTests
         // Arrange
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<MapXOverlordTyrantResultStrategy>(strategy);
@@ -235,9 +251,10 @@ public class ResultStrategyFactoryTests
         // Arrange
         var resourceId = "123456";
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<TeamXXResultStrategy>(strategy);
@@ -250,9 +267,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "123456";
         var groupBetType = 5; // Duration
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<TimeResultStrategy>(strategy);
@@ -265,9 +283,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "123456";
         var groupBetType = 4; // Non-team, non-duration
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<MapXResultStrategy>(strategy);
@@ -284,9 +303,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "91011234";
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<TeamXYOrdinalResultStrategy>(strategy);
@@ -299,9 +319,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "39031234";
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<SetRacePointStrategy>(strategy);
@@ -314,9 +335,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "39151234";
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<SetPointPlayedStrategy>(strategy);
@@ -331,9 +353,10 @@ public class ResultStrategyFactoryTests
         // Arrange
         var resourceId = "12345678";
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<TeamXXYYResultStrategy>(strategy);
@@ -346,9 +369,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "12345678";
         var groupBetType = 5; // Duration
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<TimeKillsResultStrategy>(strategy);
@@ -361,9 +385,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "12345678";
         var groupBetType = 4; // Non-team, non-duration
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<MapXYResultStrategy>(strategy);
@@ -380,9 +405,10 @@ public class ResultStrategyFactoryTests
         var resourceId = "unknown123";
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<MainResultStrategy>(strategy);
@@ -402,15 +428,86 @@ public class ResultStrategyFactoryTests
         // Arrange
         var groupBetType = 0;
         var mainResource = new List<string>();
+        var sportType = 1;
 
         // Act
-        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource);
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, groupBetType, mainResource, sportType);
 
         // Assert
         Assert.IsType<MainResultStrategy>(strategy);
     }
 
     #endregion Edge Cases and Default Tests
+
+    #region Sport Specific Tests
+
+    [Theory]
+    [InlineData("68011")]
+    [InlineData("68199")]
+    [InlineData("68200")]
+    [InlineData("68355")]
+    [InlineData("68477")]
+    public void GetStrategy_SportType2_PlayerMostPointsPrefixes_ReturnsPlayerMostPointsResultStrategy(string resourceId)
+    {
+        var mainResource = new List<string>();
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, 0, mainResource, 2);
+        Assert.IsType<PlayerMostPointsResultStrategy>(strategy);
+    }
+
+    [Theory]
+    [InlineData("67710")]
+    [InlineData("67988")]
+    public void GetStrategy_SportType2_PlayerDoublePrefixes_ReturnsPlayerDoubleResultStrategy(string resourceId)
+    {
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, 0, new List<string>(), 2);
+        Assert.IsType<PlayerDoubleResultStrategy>(strategy);
+    }
+
+    [Theory]
+    [InlineData("65301")]
+    [InlineData("65699")]
+    [InlineData("65912")]
+    [InlineData("66234")]
+    [InlineData("66556")]
+    [InlineData("66778")]
+    [InlineData("66990")]
+    [InlineData("67111")]
+    [InlineData("67322")]
+    [InlineData("67433")]
+    public void GetStrategy_SportType2_PlayerPointPrefixes_ReturnsPlayerPointResultStrategy(string resourceId)
+    {
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, 0, new List<string>(), 2);
+        Assert.IsType<PlayerPointResultStrategy>(strategy);
+    }
+
+    [Theory]
+    [InlineData("67501")]
+    [InlineData("67655")]
+    [InlineData("67899")]
+    public void GetStrategy_SportType2_PlayerPerformancePrefixes_ReturnsPlayerPerformanceResultStrategy(string resourceId)
+    {
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, 0, new List<string>(), 2);
+        Assert.IsType<PlayerPerformanceResultStrategy>(strategy);
+    }
+
+    [Fact]
+    public void GetStrategy_SportType2_MainResourceTakesPrecedenceOverSportSpecific()
+    {
+        var resourceId = "68011"; // would match PlayerMostPointsResultStrategy
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, 0, new List<string> { resourceId }, 2);
+        Assert.IsType<MainResultStrategy>(strategy);
+    }
+
+    [Fact]
+    public void GetStrategy_UnknownSportType_DoesNotApplySportSpecificLogic()
+    {
+        var resourceId = "68011"; // prefix 680, but sportType != 2
+        var strategy = ResultStrategyFactory.GetStrategy(resourceId, 0, new List<string>(), 99);
+        // length 5 -> not 6/8 -> fallback MainResultStrategy
+        Assert.IsType<MainResultStrategy>(strategy);
+    }
+
+    #endregion Sport Specific Tests
 
     #region GetPositionResultStrategy Tests
 

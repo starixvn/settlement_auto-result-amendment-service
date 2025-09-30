@@ -8,8 +8,7 @@ public class CreateResultHistoryItemContext
     public short ActionType { get; set; }
     public int SequenceNumber { get; set; }
     public List<string> MainResourceIds { get; set; }
-
     public string Type { get; set; }
-
     public string Action { get; set; }
+    public int SportType { get; set; }
 }

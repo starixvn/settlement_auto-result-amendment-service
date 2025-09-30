@@ -4,127 +4,108 @@ namespace ResultAmendment.Features.SetResultsStrategy;
 
 public static class ResultStrategyFactory
 {
+    private static readonly string[] LanePrefixes = ["9113", "9114", "9130", "9135", "9138"];
+    private static readonly string[] YesNoPrefixes = ["9124", "9132", "9133", "9075", "9087"];
+
+    private static readonly Dictionary<int, List<(string[] prefixes, Func<ISetResultStrategy> factory)>> SportSpecificRules = new()
+    {
+        {
+            2,
+            new List<(string[] prefixes, Func<ISetResultStrategy>)>
+            {
+                (["680", "681", "682", "683", "684"], () => new PlayerMostPointsResultStrategy()),
+                (["677", "679" ], () => new PlayerDoubleResultStrategy()),
+                ([ "653", "656", "659", "662", "665", "667", "669", "671", "673", "674"], () => new PlayerPointResultStrategy()),
+                (["675", "676","678"], () => new PlayerPerformanceResultStrategy()),
+
+            }
+        }
+    };
 
     public static ISetResultStrategy GetPositionResultStrategy(string resourceId)
     {
         return new FastMarketResultStrategy();
     }
 
-    public static ISetResultStrategy GetStrategy(string resourceId, int groupBetType, List<string> mainResource)
+    public static ISetResultStrategy GetStrategy(string resourceId, int groupBetType, List<string> mainResource, int sportType)
     {
         if (mainResource.Contains(resourceId))
         {
             return new MainResultStrategy();
         }
 
-        if (IsTeamResult(resourceId))
+        // Refactored sport-specific lookup
+        if (TryGetSportSpecificStrategy(sportType, resourceId, out var sportStrategy))
         {
-            return new TeamResultStrategy();
+            return sportStrategy;
         }
 
-        if (IsTeamXXResult(resourceId))
+        return resourceId switch
         {
-            return new TeamXXResultStrategy();
-        }
-
-        return IsTeamXXYYResult(resourceId) ? new TeamXXYYResultStrategy() : GetStrategyByLength(resourceId, groupBetType);
+            "604" or "605" or "3901" => new TeamResultStrategy(),
+            _ when StartsWith(resourceId, "606", "607", "617") => new TeamXXResultStrategy(),
+            _ when StartsWith(resourceId, "613", "712", "713") => new TeamXXYYResultStrategy(),
+            _ => GetByLength(resourceId, groupBetType)
+        };
     }
 
-    private static ISetResultStrategy GetStrategyByLength(string resourceId, int groupBetType)
+    private static ISetResultStrategy GetByLength(string resourceId, int groupBetType)
     {
         return resourceId.Length switch
         {
-            6 => GetLengthSixStrategy(resourceId, groupBetType),
-            8 => GetLengthEightStrategy(resourceId, groupBetType),
+            6 => GetLengthSix(resourceId, groupBetType),
+            8 => GetLengthEight(resourceId, groupBetType),
             _ => new MainResultStrategy()
         };
     }
 
-    private static bool IsTeamXXYYResult(string resourceId)
+    private static ISetResultStrategy GetLengthSix(string resourceId, int groupBetType) =>
+        resourceId switch
+        {
+            _ when StartsWithAny(resourceId, LanePrefixes) => new MapXLaneResultStrategy(),          // GroupBetType 6..10
+            _ when StartsWith(resourceId, "9141", "9142") => new MapXOverlordTyrantResultStrategy(),// GroupBetType 11,12
+            _ when StartsWithAny(resourceId, YesNoPrefixes) => new MapXYesNoResultStrategy(),         // GroupBetType 3,13
+            _ when GroupBetTypes.Team.Contains(groupBetType) => new TeamXXResultStrategy(),            // GroupBetType 0,1,2
+            _ when GroupBetTypes.Duration == groupBetType => new TimeResultStrategy(),              // GroupBetType 5
+            _ => new MapXResultStrategy()
+        };
+
+    private static ISetResultStrategy GetLengthEight(string resourceId, int groupBetType) =>
+        resourceId switch
+        {
+            _ when resourceId.StartsWith("9101") => new TeamXYOrdinalResultStrategy(),     // GroupBetType 6..10
+            _ when resourceId.StartsWith("3903") => new SetRacePointStrategy(),
+            _ when resourceId.StartsWith("3915") => new SetPointPlayedStrategy(),
+            _ when GroupBetTypes.Team.Contains(groupBetType) => new TeamXXYYResultStrategy(),          // GroupBetType 0,1,2
+            _ when GroupBetTypes.Duration == groupBetType => new TimeKillsResultStrategy(),         // GroupBetType 5
+            _ => new MapXYResultStrategy()
+        };
+
+    private static bool StartsWithAny(string value, string[] prefixes) =>
+        prefixes.Any(value.StartsWith);
+
+    private static bool StartsWith(string value, params string[] prefixes)
+        => prefixes.Any(value.StartsWith);
+
+
+    private static bool TryGetSportSpecificStrategy(int sportType, string resourceId, out ISetResultStrategy strategy)
     {
-        return resourceId.StartsWith("613") || resourceId.StartsWith("712") || resourceId.StartsWith("713");
+        strategy = default!;
+        if (!SportSpecificRules.TryGetValue(sportType, out var rules))
+        {
+            return false;
+        }
+
+        var (prefixes, factory) = rules
+            .FirstOrDefault(rule => rule.prefixes.Any(prefix => resourceId.StartsWith(prefix, StringComparison.Ordinal)));
+
+        if (prefixes != null)
+        {
+            strategy = factory();
+            return true;
+        }
+
+        return false;
     }
 
-    private static bool IsTeamXXResult(string resourceId)
-    {
-        return resourceId.StartsWith("606") || resourceId.StartsWith("607") || resourceId.StartsWith("617");
-    }
-
-    private static bool IsTeamResult(string resourceId)
-    {
-        return resourceId is "604" or "605" or "3901";
-    }
-
-    private static ISetResultStrategy GetLengthSixStrategy(string resourceId, int groupBetType)
-    {
-        var laneResultPattern = new List<string> { "9113", "9114", "9130", "9135", "9138" };
-
-        var yesNoResultPattern = new List<string> { "9124", "9132", "9133", "9075", "9087" };
-
-        if (laneResultPattern.Exists(resourceId.StartsWith))
-        {
-            // GroupBetType 6, 7, 8, 9, 10
-            return new MapXLaneResultStrategy();
-        }
-
-        if (resourceId.StartsWith("9141") || resourceId.StartsWith("9142"))
-        {
-            // GroupBetType 11,12
-            return new MapXOverlordTyrantResultStrategy();
-        }
-
-        if (yesNoResultPattern.Exists(resourceId.StartsWith))
-        {
-            // GroupBetType 3 , 13
-            return new MapXYesNoResultStrategy();
-        }
-
-        if (GroupBetTypes.Team.Contains(groupBetType))
-        {
-            //e2 // GroupBetType 0, 1, 2
-            return new TeamXXResultStrategy();
-        }
-
-        if (GroupBetTypes.Duration == groupBetType)
-        {
-            //e6 // GroupBetType 5
-            return new TimeResultStrategy();
-        }
-
-        return new MapXResultStrategy();
-    }
-
-    private static ISetResultStrategy GetLengthEightStrategy(string resourceId, int groupBetType)
-    {
-        if (resourceId.StartsWith("9101"))
-        {
-            // GroupBetType 6, 7, 8, 9, 10
-            return new TeamXYOrdinalResultStrategy();
-        }
-
-        if (resourceId.StartsWith("3903"))
-        {
-            // For Set X Race To Y Points
-            return new SetRacePointStrategy();
-        }
-
-        if (resourceId.StartsWith("3915"))
-        {
-            return new SetPointPlayedStrategy();
-        }
-
-        if (GroupBetTypes.Team.Contains(groupBetType))
-        {
-            //e3, e5  GroupBetType 0, 1, 2
-            return new TeamXXYYResultStrategy();
-        }
-
-        if (GroupBetTypes.Duration == groupBetType)
-        {
-            //e7 // GroupBetType 5
-            return new TimeKillsResultStrategy();
-        }
-
-        return new MapXYResultStrategy();
-    }
 }

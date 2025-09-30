@@ -34,9 +34,11 @@ public class GenerateResultServiceTests
 
         var mainResourceIds = new List<string> { "Q1" };
 
+        var sportType = 2;
+
         // Act
         var (wrongResults, actualResults) = generateResultService.GenerateWrongAndActualResults(
-            resultsChanged, selectedResources, mainResourceIds);
+            resultsChanged, selectedResources, mainResourceIds, sportType);
 
         // Assert
         Assert.NotNull(wrongResults);
@@ -63,10 +65,11 @@ public class GenerateResultServiceTests
         };
 
         var mainResourceIds = new List<string> { "Q1", "Q2" };
+        var sportType = 2;
 
         // Act
         var (wrongResults, actualResults) = generateResultService.GenerateWrongAndActualResults(
-            resultsChanged, selectedResources, mainResourceIds);
+            resultsChanged, selectedResources, mainResourceIds, sportType);
 
         // Assert
         Assert.NotNull(wrongResults);
@@ -90,9 +93,11 @@ public class GenerateResultServiceTests
 
         var mainResourceIds = new List<string> { "Q1" };
 
+        var sportType = 2;
+
         // Act
         var (wrongResults, actualResults) = generateResultService.GenerateWrongAndActualResults(
-            resultsChanged, selectedResources, mainResourceIds);
+            resultsChanged, selectedResources, mainResourceIds, sportType);
 
         // Assert
         Assert.NotNull(wrongResults);

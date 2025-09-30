@@ -12,7 +12,8 @@ public interface IGenerateResultService
     (List<ResultItem> WrongResults, List<ResultItem> ActualResults) GenerateWrongAndActualResults(
         List<ResultChanged> resultsChanged,
         List<ResourceItem> selectedResources,
-        List<string> mainResourceIds);
+        List<string> mainResourceIds,
+        int sportType);
 
     (List<ResultItem> WrongResults, List<ResultItem> ActualResults) GenerateFastMarketResult(string action, List<ResultChanged> resultChanged, List<ResourceItem> selectedResources);
 
@@ -24,7 +25,8 @@ public class GenerateResultService(XmlConvertService xmlConvertService) : IGener
     public (List<ResultItem> WrongResults, List<ResultItem> ActualResults) GenerateWrongAndActualResults(
         List<ResultChanged> resultsChanged,
         List<ResourceItem> selectedResources,
-        List<string> mainResourceIds)
+        List<string> mainResourceIds,
+        int sportType)
     {
         var wrongResults = new List<ResultItem>();
         var actualResults = new List<ResultItem>();
@@ -37,7 +39,7 @@ public class GenerateResultService(XmlConvertService xmlConvertService) : IGener
                 continue;
             }
 
-            var strategy = ResultStrategyFactory.GetStrategy(item.ResourceId, item.GroupBetType, mainResourceIds);
+            var strategy = ResultStrategyFactory.GetStrategy(item.ResourceId, item.GroupBetType, mainResourceIds, sportType);
             var (wrongResult, actualResult) = strategy.Generate(resultChanged, item);
 
             wrongResults.Add(wrongResult);
