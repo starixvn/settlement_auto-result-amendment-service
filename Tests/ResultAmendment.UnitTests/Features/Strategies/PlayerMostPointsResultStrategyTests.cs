@@ -1,6 +1,5 @@
 ﻿using Fanex.Settlement.MessageBridge.ResultAmendment;
 using ResultAmendment.Features.SetResultsStrategy.Strategies;
-using Xunit;
 
 namespace ResultAmendment.UnitTests.Features.Strategies;
 
@@ -20,7 +19,8 @@ public class PlayerMostPointsResultStrategyTests
         ResourceId = resourceId,
         HomeValue = home,
         AwayValue = "y",
-        OtherInfo = "[]" // currently ignored by strategy
+        OtherInfo = "[]", // currently ignored by strategy,
+        OddsInfo = []
     };
 
     [Fact]

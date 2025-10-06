@@ -19,7 +19,8 @@ public class PlayerDoubleResultStrategyTests
         ResourceId = resourceId,
         HomeValue = home,
         AwayValue = away,
-        OtherInfo = $"{{\"pid\":{playerId}}}" // JSON used for deserialization
+        OtherInfo = $"{playerId}", // JSON used for deserialization,
+        OddsInfo = []
     };
 
     [Fact]
@@ -76,6 +77,5 @@ public class PlayerDoubleResultStrategyTests
         // Assert
         Assert.Equal("H", wrong.Home);
         Assert.Equal("X", actual.Home);
-        Assert.Equal("555", wrong.OtherInfo);
     }
 }

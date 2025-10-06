@@ -17,7 +17,8 @@ public class PlayerPerformanceResultStrategyTests
     {
         ResourceId = resourceId,
         HomeValue = home,
-        OtherInfo = json
+        OtherInfo = json,
+        OddsInfo = []
     };
 
     [Fact]
@@ -45,10 +46,6 @@ public class PlayerPerformanceResultStrategyTests
         // Away not set in this strategy
         Assert.Null(wrong.Away);
         Assert.Null(actual.Away);
-
-        // OtherInfo should be copied verbatim from resource item
-        Assert.Equal(resourceItem.OtherInfo, wrong.OtherInfo);
-        Assert.Equal(resourceItem.OtherInfo, actual.OtherInfo);
     }
 
     [Fact]

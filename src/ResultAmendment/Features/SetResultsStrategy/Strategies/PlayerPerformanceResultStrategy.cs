@@ -15,7 +15,7 @@ public class PlayerPerformanceResultStrategy : ISetResultStrategy // basektball:
             ResourceId = resourceId,
             Home = resultChanged.HomeValue,
             RefBetTypeId = betTypeId,
-            OtherInfo = resourceItem.OtherInfo
+            OtherInfo = resourceItem.OddsInfo.FirstOrDefault() ?? string.Empty
         };
 
         var actualResult = new ResultItem
@@ -23,7 +23,7 @@ public class PlayerPerformanceResultStrategy : ISetResultStrategy // basektball:
             ResourceId = resourceId,
             Home = resourceItem.HomeValue,
             RefBetTypeId = betTypeId,
-            OtherInfo = resourceItem.OtherInfo
+            OtherInfo = resourceItem.OddsInfo.FirstOrDefault() ?? string.Empty
         };
 
         return (wrongResult, actualResult);

@@ -8,7 +8,13 @@ public class PlayerDoubleResultStrategy : ISetResultStrategy // 677, 679
 {
     public (ResultItem wrongResult, ResultItem actualResult) Generate(ResultChanged resultChanged, ResourceItem resourceItem)
     {
-        var oddInfoModel = JsonSerializer.Deserialize<OddsInfoModel>(resourceItem.OtherInfo);
+        var oddInfos = resourceItem.OddsInfo
+            .Select(x => JsonSerializer.Deserialize<OddsInfoModel>(x))
+            .ToList();
+
+        var oddInfoModel = oddInfos.FirstOrDefault();
+        var playerId = oddInfoModel != null ? $"{oddInfoModel.PlayerId}" : string.Empty;
+
         var resourceId = resultChanged.ResourceId;
         var betTypeId = resultChanged.ResourceId[..^2];
 
@@ -17,7 +23,7 @@ public class PlayerDoubleResultStrategy : ISetResultStrategy // 677, 679
             ResourceId = resourceId,
             Home = resultChanged.HomeValue,
             RefBetTypeId = betTypeId,
-            OtherInfo = $"{oddInfoModel.PlayerId}"
+            OtherInfo = playerId
         };
 
         var actualResult = new ResultItem
@@ -25,7 +31,7 @@ public class PlayerDoubleResultStrategy : ISetResultStrategy // 677, 679
             ResourceId = resourceId,
             Home = resourceItem.HomeValue,
             RefBetTypeId = betTypeId,
-            OtherInfo = $"{oddInfoModel.PlayerId}"
+            OtherInfo = playerId
         };
 
         return (wrongResult, actualResult);

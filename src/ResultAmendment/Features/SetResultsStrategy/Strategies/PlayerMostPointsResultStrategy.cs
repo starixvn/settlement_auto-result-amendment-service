@@ -1,5 +1,6 @@
 ﻿using Fanex.Settlement.MessageBridge.ResultAmendment;
 using ResultAmendment.Models;
+using System.Text.Json;
 
 namespace ResultAmendment.Features.SetResultsStrategy.Strategies;
 
@@ -7,7 +8,10 @@ public class PlayerMostPointsResultStrategy : ISetResultStrategy // 680
 {
     public (ResultItem wrongResult, ResultItem actualResult) Generate(ResultChanged resultChanged, ResourceItem resourceItem)
     {
-        var oddInfoModel = new List<OddsInfoModel>();
+        var oddInfos = resourceItem.OddsInfo
+            .Select(x => JsonSerializer.Deserialize<OddsInfoModel>(x))
+            .ToList();
+
         var resourceId = resultChanged.ResourceId;
         var betTypeId = resultChanged.ResourceId[..^2];
 
@@ -16,8 +20,8 @@ public class PlayerMostPointsResultStrategy : ISetResultStrategy // 680
             ResourceId = resourceId,
             Home = resultChanged.HomeValue,
             RefBetTypeId = betTypeId,
-            OtherInfo = GetOtherInfo(oddInfoModel),
-            TeamIds = GetTeamIds(resultChanged.HomeValue, oddInfoModel)
+            OtherInfo = GetOtherInfo(oddInfos),
+            TeamIds = GetTeamIds(resultChanged.HomeValue, oddInfos)
         };
 
         var actualResult = new ResultItem
@@ -25,8 +29,8 @@ public class PlayerMostPointsResultStrategy : ISetResultStrategy // 680
             ResourceId = resourceId,
             Home = resourceItem.HomeValue,
             RefBetTypeId = betTypeId,
-            TeamIds = GetTeamIds(resourceItem.HomeValue, oddInfoModel),
-            OtherInfo = GetOtherInfo(oddInfoModel),
+            TeamIds = GetTeamIds(resourceItem.HomeValue, oddInfos),
+            OtherInfo = GetOtherInfo(oddInfos),
         };
 
         return (wrongResult, actualResult);
