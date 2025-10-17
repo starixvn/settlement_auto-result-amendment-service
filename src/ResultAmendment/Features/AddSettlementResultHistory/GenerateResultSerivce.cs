@@ -4,24 +4,27 @@ using Fanex.Settlement.MessageBridge.ResultAmendment;
 using ResultAmendment.Features.GetFastMarketInfo;
 using ResultAmendment.Features.SetResultsStrategy;
 using ResultAmendment.Models;
+using Results = (System.Collections.Generic.List<ResultAmendment.Models.ResultItem> WrongResults, System.Collections.Generic.List<ResultAmendment.Models.ResultItem> ActualResults);
+
 
 namespace ResultAmendment.Features.AddSettlementResultHistory;
 
 public interface IGenerateResultService
 {
-    (List<ResultItem> WrongResults, List<ResultItem> ActualResults) GenerateWrongAndActualResults(
+    Results GenerateWrongAndActualResults(
         List<ResultChanged> resultsChanged,
         List<ResourceItem> selectedResources,
         List<string> mainResourceIds);
 
     (List<ResultItem> WrongResults, List<ResultItem> ActualResults) GenerateFastMarketResult(string action, List<ResultChanged> resultChanged, List<ResourceItem> selectedResources);
 
+    Results GenerateBetBuilderResult(List<ResultChanged> resultChanged, List<ResourceItem> selectedResources);
     string GenerateExtraInfo(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged, string type);
 }
 
 public class GenerateResultService(XmlConvertService xmlConvertService) : IGenerateResultService
 {
-    public (List<ResultItem> WrongResults, List<ResultItem> ActualResults) GenerateWrongAndActualResults(
+    public Results GenerateWrongAndActualResults(
         List<ResultChanged> resultsChanged,
         List<ResourceItem> selectedResources,
         List<string> mainResourceIds)
@@ -47,7 +50,7 @@ public class GenerateResultService(XmlConvertService xmlConvertService) : IGener
         return (wrongResults, actualResults);
     }
 
-    public (List<ResultItem> WrongResults, List<ResultItem> ActualResults) GenerateFastMarketResult(string action, List<ResultChanged> resultChanged, List<ResourceItem> selectedResources)
+    public Results GenerateFastMarketResult(string action, List<ResultChanged> resultChanged, List<ResourceItem> selectedResources)
     {
         var wrongResults = new List<ResultItem>();
         var actualResults = new List<ResultItem>();
@@ -71,38 +74,74 @@ public class GenerateResultService(XmlConvertService xmlConvertService) : IGener
 
     public string GenerateExtraInfo(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged, string type)
     {
-        var extraInfoItems = GenerateExtraInfoItems(selectedResources, resultsChanged, type == ResultAmendmentType.FastMarket);
+        var extraInfoItems = GenerateExtraInfoItems(selectedResources, resultsChanged, type);
 
         var extraInfo = new ExtraInfo { ExtraInfoItems = extraInfoItems, Type = type };
 
         return xmlConvertService.Serialize(extraInfo);
     }
 
-    private static List<ExtraInfoItem> GenerateExtraInfoItems(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged, bool isFastMarket)
+    private static List<ExtraInfoItem> GenerateExtraInfoItems(List<ResourceItem> selectedResources, List<ResultChanged> resultsChanged, string type)
     {
         var extraInfoItems = new List<ExtraInfoItem>();
 
+        var isFastMarket = type == ResultAmendmentType.FastMarket;
+        var isBetBuilder = type == "BB";
+
         foreach (var resource in selectedResources)
         {
-            var resultChanged = isFastMarket ? resultsChanged.Find(x => x.ResourceId == resource.ResourceId && x.OtherInfo == resource.OtherInfo)
-                                        : resultsChanged.Find(x => x.ResourceId == resource.ResourceId);
+            var resultChanged = FindResultChanged(resource, resultsChanged, isFastMarket, isBetBuilder);
 
             if (resultChanged is not null)
             {
-                var positionName = isFastMarket ? GetPositionName.Get(resource.ResourceId, resource.OtherInfo) : null;
-                var extraInfoItem = new ExtraInfoItem
-                {
-                    ResourceId = resource.ResourceId,
-                    CalcDateTime = resultChanged.LogDate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
-                    ReCalcDateTime = DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
-                    Position = isFastMarket ? resource.OtherInfo : null,
-                    PositionName = positionName
-                };
 
+                var extraInfoItem = CreateExtraInfoItem(resource, resultChanged, isFastMarket, isBetBuilder);
                 extraInfoItems.Add(extraInfoItem);
             }
         }
 
         return extraInfoItems;
+    }
+
+    public Results GenerateBetBuilderResult(
+        List<ResultChanged> resultChanged,
+        List<ResourceItem> selectedResources)
+    {
+        var wrongResults = new List<ResultItem>();
+        var actualResults = new List<ResultItem>();
+
+        foreach (var item in selectedResources)
+        {
+            var strategy = ResultStrategyFactory.GetBetBuilderResultStrategy();
+            var resultsChanged = resultChanged.FirstOrDefault(x => x.ResourceId == item.ResourceId && x.OtherInfo == item.OtherInfo);
+
+            if (resultsChanged is not null)
+            {
+                var (wrongResult, actualResult) = strategy.Generate(resultsChanged, item);
+
+                wrongResults.Add(wrongResult);
+                actualResults.Add(actualResult);
+            }
+        }
+        return (wrongResults, actualResults);
+    }
+
+    private static ResultChanged FindResultChanged(ResourceItem resource, List<ResultChanged> resultsChanged, bool isFastMarket, bool isBetBuilder) =>
+    isFastMarket || isBetBuilder
+        ? resultsChanged.Find(x => x.ResourceId == resource.ResourceId && x.OtherInfo == resource.OtherInfo)
+        : resultsChanged.Find(x => x.ResourceId == resource.ResourceId);
+
+    private static ExtraInfoItem CreateExtraInfoItem(ResourceItem resource, ResultChanged resultChanged, bool isFastMarket, bool isBetBuilder)
+    {
+        var positionName = isFastMarket ? GetPositionName.Get(resource.ResourceId, resource.OtherInfo) : null;
+        return new ExtraInfoItem
+        {
+            ResourceId = resource.ResourceId,
+            CalcDateTime = resultChanged.LogDate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+            ReCalcDateTime = DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+            Position = isFastMarket ? resource.OtherInfo : null,
+            PositionName = positionName,
+            MarketId = isBetBuilder ? resource.OtherInfo : null
+        };
     }
 }

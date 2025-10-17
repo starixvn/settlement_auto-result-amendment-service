@@ -68,21 +68,26 @@ public class AddSettlementResultHistoryHandler(
 
     private SettlementResultHistoryItem CreateResultHistoryItem(CreateResultHistoryItemContext context)
     {
-        var (wrongResults, actualResults) = context.Type == ResultAmendmentType.FastMarket ?
-        generateResultService.GenerateFastMarketResult(context.Action, context.ResultsChanged, context.SelectedResources) : generateResultService.GenerateWrongAndActualResults(
-            context.ResultsChanged,
-            context.SelectedResources,
-            context.MainResourceIds);
+        var (wrongResults, actualResults) = context.Type switch
+        {
+            "FM" => generateResultService.GenerateFastMarketResult(context.Action, context.ResultsChanged, context.SelectedResources),
+            "BB" => generateResultService.GenerateBetBuilderResult(context.ResultsChanged, context.SelectedResources),
+            _ => generateResultService.GenerateWrongAndActualResults(context.ResultsChanged, context.SelectedResources, context.MainResourceIds)
+        };
+
 
         return new SettlementResultHistoryItem
         {
             SeqNo = context.SequenceNumber,
-            WrongResult = xmlConvertService.Serialize(new ResultInfo { ResultItems = wrongResults, Type = context.Type }),
-            ActualResult = xmlConvertService.Serialize(new ResultInfo { ResultItems = actualResults, Type = context.Type }),
+            WrongResult = SerializeResultInfo(wrongResults, context.Type),
+            ActualResult = SerializeResultInfo(actualResults, context.Type),
             ExtraInfo = generateResultService.GenerateExtraInfo(context.SelectedResources, context.ResultsChanged, context.Type),
             ActionType = context.ActionType
         };
     }
+
+    private string SerializeResultInfo(List<ResultItem> items, string type)
+        => xmlConvertService.Serialize(new ResultInfo { ResultItems = items, Type = type });
 
     private static List<IGrouping<short, ResultChanged>> GetTicketsGroupByResettleType(string action, string type, List<ResultChanged> results)
     {
@@ -106,7 +111,7 @@ public class AddSettlementResultHistoryHandler(
             return ReSettleType.UnKnow;
         }
 
-        return type == ResultAmendmentType.FastMarket
+        return type == ResultAmendmentType.FastMarket || type == "BB"
             ? ReSettleType.FastMarketType
             : DetermineActionType(beforeAction.ToUpperInvariant(), currentAction.ToUpperInvariant());
     }

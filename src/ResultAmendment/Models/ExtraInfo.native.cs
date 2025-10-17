@@ -29,4 +29,7 @@ public class ExtraInfoItem
 
     [XmlAttribute("PosName")]
     public string PositionName { get; set; }
+
+    [XmlAttribute("MarketId")]
+    public string MarketId { get; set; }
 }
