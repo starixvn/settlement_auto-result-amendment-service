@@ -7,100 +7,202 @@ using Shared;
 
 namespace SettlementResultHistory.UnitTests.Services;
 
-// AAA (Arrange-Act-Assert) formatted test class
 public class SettlementResultHistoryServiceTests
 {
-    private readonly SettlementResultHistoryRepository _repo;
-    private readonly SettlementResultHistoryServiceImp _service;
-    private readonly IOptions<AppSettings> _settings;
+    private readonly SettlementResultHistoryRepository resultHistoryRepository;
+    private readonly IOptions<AppSettings> appSettings;
+    private readonly SettlementResultHistoryService service;
 
     public SettlementResultHistoryServiceTests()
     {
-        _settings = Options.Create(new AppSettings
+        resultHistoryRepository = Substitute.For<SettlementResultHistoryRepository>();
+        var settings = new AppSettings
         {
-            EnvironmentName = "PRO",
-            SiteDbServer = ["abc", "xyz"],
-            EmailAddress = ["harley.nguyen@starixsoft.com"]
-        });
-
-        _repo = Substitute.For<SettlementResultHistoryRepository>();
-        _service = new SettlementResultHistoryServiceImp(_repo, _settings);
-    }
-
-    [Fact]
-    public async Task Handle_WhenItemsPresent_ProcessesEach() // AAA
-    {
-        // Arrange
-        var items = new List<ResultHistorySettled>
-        {
-            new() { HasError = false, IsCalculated = true, IsDoneBalNeg = true }
+            EmailAddress = ["test@example.com", "test2@example.com"],
+            EnvironmentName = "TEST"
         };
-        _repo.GetResultHistoryByEnv().Returns(items);
-        _repo.CheckResultHistoryError(Arg.Any<ResultHistorySettled>())
-             .Returns([new() { SessionId = "abc" }]);
-
-        // Act
-        await _service.Handle();
-
-        // Assert
-        await _repo.Received(2)
-            .UpdateResultHistory(Arg.Any<ResultHistorySettled>(), Arg.Any<short>());
+        appSettings = Options.Create(settings);
+        service = new SettlementResultHistoryServiceImp(resultHistoryRepository, appSettings);
     }
 
     [Fact]
-    public async Task Handle_WhenItemHasError_SetsErrorStatus() // AAA
+    public async Task Handle_WhenNoItems_ShouldNotProcessAnything()
     {
         // Arrange
-        var items = new List<ResultHistorySettled> { new() { HasError = true } };
-        _repo.GetResultHistoryByEnv().Returns(items);
+        resultHistoryRepository.GetResultHistoryByEnv().Returns(new List<ResultHistorySettled>());
 
         // Act
-        await _service.Handle();
+        await service.Handle();
 
         // Assert
-        await _repo.Received(1)
-            .InsResultHistoryTicketDetails(Arg.Any<ResultHistorySettled>(), string.Empty);
-        await _repo.Received(1)
-            .UpdateResultHistory(Arg.Any<ResultHistorySettled>(), ResultHistoryStatus.Error);
+        await resultHistoryRepository.Received(1).GetResultHistoryByEnv();
+        await resultHistoryRepository.DidNotReceive().InsResultHistoryTicketDetails(Arg.Any<ResultHistorySettled>(), Arg.Any<string>());
+        await resultHistoryRepository.DidNotReceive().UpdateResultHistory(Arg.Any<ResultHistorySettled>(), Arg.Any<short>());
     }
 
     [Fact]
-    public async Task Handle_WhenCalculatedAndBalancedWithNoErrors_SetsSuccess() // AAA
+    public async Task Handle_WhenItemHasError_ShouldUpdateToErrorStatus()
     {
         // Arrange
-        var item = new ResultHistorySettled { IsCalculated = true, IsDoneBalNeg = true };
-        _repo.GetResultHistoryByEnv().Returns(new List<ResultHistorySettled> { item });
-        _repo.CheckResultHistoryError(item).Returns(new List<FailureResultHistory>());
-
-        // Act
-        await _service.Handle();
-
-        // Assert
-        await _repo.Received(1).UpdateResultHistory(item, ResultHistoryStatus.Success);
-        await _repo.DidNotReceive()
-            .UpdateResultHistory(item, ResultHistoryStatus.ErrorHandled);
-    }
-
-    [Fact]
-    public async Task Handle_WhenCalculatedAndBalancedWithErrors_SetsErrorHandled() // AAA
-    {
-        // Arrange
-        var item = new ResultHistorySettled { IsCalculated = true, IsDoneBalNeg = true };
-        _repo.GetResultHistoryByEnv().Returns(new List<ResultHistorySettled> { item });
-        _repo.CheckResultHistoryError(item).Returns(new List<FailureResultHistory>
+        var item = new ResultHistorySettled
         {
-            new() { SessionId = "S1" }, new() { SessionId = "S2" }
-        });
+            MatchId = 123,
+            SessionId = "session1",
+            HasError = true,
+            DbServer = "dbserver1"
+        };
+
+        resultHistoryRepository.GetResultHistoryByEnv().Returns(new List<ResultHistorySettled> { item });
 
         // Act
-        await _service.Handle();
+        await service.Handle();
 
         // Assert
-        await _repo.Received(1)
-            .InsResultHistoryTicketDetails(item, "S1,S2");
-        await _repo.Received(1)
-            .UpdateResultHistory(item, ResultHistoryStatus.Success);
-        await _repo.Received(1)
-            .UpdateResultHistory(item, ResultHistoryStatus.ErrorHandled);
+        await resultHistoryRepository.Received(1).InsResultHistoryTicketDetails(
+            Arg.Is<ResultHistorySettled>(x => x.MatchId == 123 && x.HasError),
+            string.Empty);
+        await resultHistoryRepository.Received(1).UpdateResultHistory(
+            Arg.Is<ResultHistorySettled>(x => x.MatchId == 123),
+            ResultHistoryStatus.Error);
+    }
+
+    [Fact]
+    public async Task Handle_WhenItemIsSuccessful_ShouldCallHandleTicketSettleDone()
+    {
+        // Arrange
+        var item = new ResultHistorySettled
+        {
+            MatchId = 123,
+            SessionId = "session1",
+            HasError = false,
+            IsCalculated = true,
+            IsDoneBalNeg = true,
+            DbServer = "dbserver1",
+            CreatedDate = DateTime.Now,
+            ActualResult = "result1"
+        };
+
+        resultHistoryRepository.GetResultHistoryByEnv().Returns(new List<ResultHistorySettled> { item });
+        resultHistoryRepository.CheckResultHistoryError(item).Returns(new List<FailureResultHistory>());
+
+        // Act
+        await service.Handle();
+
+        // Assert
+        await resultHistoryRepository.Received(1).CheckResultHistoryError(item);
+        await resultHistoryRepository.Received(1).InsResultHistoryTicketDetails(
+            Arg.Is<ResultHistorySettled>(x => x.MatchId == 123),
+            string.Empty);
+        await resultHistoryRepository.Received(1).UpdateResultHistory(
+            Arg.Is<ResultHistorySettled>(x => x.MatchId == 123),
+            ResultHistoryStatus.Success);
+    }
+
+    [Fact]
+    public async Task Handle_WhenItemIsSuccessfulWithErrors_ShouldUpdateToErrorHandled()
+    {
+        // Arrange
+        var item = new ResultHistorySettled
+        {
+            MatchId = 123,
+            SessionId = "session1",
+            HasError = false,
+            IsCalculated = true,
+            IsDoneBalNeg = true,
+            DbServer = "dbserver1",
+            CreatedDate = DateTime.Now,
+            ActualResult = "result1"
+        };
+
+        var errorResults = new List<FailureResultHistory>
+        {
+            new() { SessionId = "error1" },
+            new() { SessionId = "error2" }
+        };
+
+        resultHistoryRepository.GetResultHistoryByEnv().Returns(new List<ResultHistorySettled> { item });
+        resultHistoryRepository.CheckResultHistoryError(item).Returns(errorResults);
+
+        // Act
+        await service.Handle();
+
+        // Assert
+        await resultHistoryRepository.Received(1).CheckResultHistoryError(item);
+        await resultHistoryRepository.Received(1).InsResultHistoryTicketDetails(
+            Arg.Is<ResultHistorySettled>(x => x.MatchId == 123),
+            "error1,error2");
+        await resultHistoryRepository.Received(1).UpdateResultHistory(
+            Arg.Is<ResultHistorySettled>(x => x.MatchId == 123),
+            ResultHistoryStatus.Success);
+        await resultHistoryRepository.Received(1).UpdateResultHistory(
+            Arg.Is<ResultHistorySettled>(x => x.MatchId == 123 && x.SessionId == "error1,error2"),
+            ResultHistoryStatus.ErrorHandled);
+    }
+
+    [Fact]
+    public async Task Handle_WhenSuccessfulItemHasEmptyErrorList_ShouldNotUpdateToErrorHandled()
+    {
+        // Arrange
+        var item = new ResultHistorySettled
+        {
+            MatchId = 123,
+            SessionId = "session1",
+            HasError = false,
+            IsCalculated = true,
+            IsDoneBalNeg = true,
+            DbServer = "dbserver1",
+            CreatedDate = DateTime.Now,
+            ActualResult = "result1"
+        };
+
+        resultHistoryRepository.GetResultHistoryByEnv().Returns(new List<ResultHistorySettled> { item });
+        resultHistoryRepository.CheckResultHistoryError(item).Returns(new List<FailureResultHistory>());
+
+        // Act
+        await service.Handle();
+
+        // Assert
+        await resultHistoryRepository.Received(1).UpdateResultHistory(
+            Arg.Is<ResultHistorySettled>(x => x.MatchId == 123),
+            ResultHistoryStatus.Success);
+        await resultHistoryRepository.DidNotReceive().UpdateResultHistory(
+            Arg.Any<ResultHistorySettled>(),
+            ResultHistoryStatus.ErrorHandled);
+    }
+
+    [Fact]
+    public async Task Handle_WhenSuccessfulItemHasSingleError_ShouldFormatSessionIdCorrectly()
+    {
+        // Arrange
+        var item = new ResultHistorySettled
+        {
+            MatchId = 123,
+            SessionId = "session1",
+            HasError = false,
+            IsCalculated = true,
+            IsDoneBalNeg = true,
+            DbServer = "dbserver1",
+            CreatedDate = DateTime.Now,
+            ActualResult = "result1"
+        };
+
+        var errorResults = new List<FailureResultHistory>
+        {
+            new() { SessionId = "single-error" }
+        };
+
+        resultHistoryRepository.GetResultHistoryByEnv().Returns(new List<ResultHistorySettled> { item });
+        resultHistoryRepository.CheckResultHistoryError(item).Returns(errorResults);
+
+        // Act
+        await service.Handle();
+
+        // Assert
+        await resultHistoryRepository.Received(1).InsResultHistoryTicketDetails(
+            Arg.Is<ResultHistorySettled>(x => x.MatchId == 123),
+            "single-error");
+        await resultHistoryRepository.Received(1).UpdateResultHistory(
+            Arg.Is<ResultHistorySettled>(x => x.MatchId == 123 && x.SessionId == "single-error"),
+            ResultHistoryStatus.ErrorHandled);
     }
 }

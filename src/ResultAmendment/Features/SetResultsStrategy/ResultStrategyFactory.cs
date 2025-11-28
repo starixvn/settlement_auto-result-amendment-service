@@ -82,10 +82,10 @@ public static class ResultStrategyFactory
         };
 
     private static bool StartsWithAny(string value, string[] prefixes) =>
-        prefixes.Any(value.StartsWith);
+        prefixes.ToList().Exists(value.StartsWith);
 
     private static bool StartsWith(string value, params string[] prefixes)
-        => prefixes.Any(value.StartsWith);
+        => prefixes.ToList().Exists(value.StartsWith);
 
 
     private static bool TryGetSportSpecificStrategy(int sportType, string resourceId, out ISetResultStrategy strategy)
@@ -97,7 +97,7 @@ public static class ResultStrategyFactory
         }
 
         var (prefixes, factory) = rules
-            .FirstOrDefault(rule => rule.prefixes.Any(prefix => resourceId.StartsWith(prefix, StringComparison.Ordinal)));
+            .Find(rule => rule.prefixes.ToList().Exists(prefix => resourceId.StartsWith(prefix, StringComparison.Ordinal)));
 
         if (prefixes != null)
         {
